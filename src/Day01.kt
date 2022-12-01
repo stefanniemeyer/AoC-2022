@@ -16,8 +16,7 @@ fun main() {
                 .filter { line -> !line.isEmpty() }
                 .map { calS -> calS.toInt() }
         }.map { calI -> calI.sum() }
-            .sorted()
-            .reversed()
+            .sortedDescending()
             .take(3)
             .sum()
 
