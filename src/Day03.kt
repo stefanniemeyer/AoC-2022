@@ -3,25 +3,20 @@ import Resources.resourceAsList
 fun main() {
     fun part1(input: List<String>): Int =
         input.map { rucksack ->
-            val (fstcomp, sndcomp) = rucksack.chunked(rucksack.length / 2)
-            val fstcompMap = fstcomp.groupingBy { it }.eachCount()
-            val sndcompMap = sndcomp.groupingBy { it }.eachCount()
-            val inter = fstcompMap.keys.intersect(sndcompMap.keys)
+            val compartmentItems = rucksack.chunked(rucksack.length / 2).map { it.toCharArray().toSet() }
+            val inter = compartmentItems[0].intersect(compartmentItems[1])
             inter.first().priority()
         }.sum()
 
     fun part2(input: List<String>): Int =
-        input.windowed(3, 3).map { (fst, snd, thrd) ->
-            val fstcompMap = fst.groupingBy { it }.eachCount()
-            val sndcompMap = snd.groupingBy { it }.eachCount()
-            val thrdcompMap = thrd.groupingBy { it }.eachCount()
-            val inter = fstcompMap.keys.intersect(sndcompMap.keys).intersect(thrdcompMap.keys)
+        input.windowed(3, 3).map { rucksacks ->
+            val rucksackItems = rucksacks.map { it.toCharArray().toSet() }
+            val inter = rucksackItems.reduce { acc, set -> acc.intersect(set) }
             inter.first().priority()
         }.sum()
 
     var name = Throwable().stackTrace.first { it.className.contains("Day") }.className.split(".")[0]
     name = name.removeSuffix("Kt")
-    // test if implementation meets criteria from the description, like:
     val testInput = resourceAsList(fileName = "${name}_test")
     val puzzleInput = resourceAsList(name)
 
@@ -31,9 +26,7 @@ fun main() {
 
     check(part2(testInput) == 70)
     check(part2(puzzleInput) == 2_444)
-
     println(part2(puzzleInput))
-
 }
 
 fun Char.priority(): Int = when (this) {
