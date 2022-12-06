@@ -37,7 +37,7 @@ fun main() {
     fun part1(input: String): String {
         val (crateStacks, moves) = parseInput(input)
         moves.forEach { (number, source, target) ->
-            (1..number).forEach {
+            repeat(number) {
                 crateStacks[target - 1] += crateStacks[source - 1].removeLast()
             }
         }
@@ -48,7 +48,7 @@ fun main() {
         val (crateStacks, moves) = parseInput(input)
         moves.forEach { (number, source, target) ->
             val movingCrates = ArrayDeque<Char>()
-            (1..number).forEach {
+            repeat(number) {
                 movingCrates += crateStacks[source - 1].removeLast()
             }
             crateStacks[target - 1].addAll(movingCrates.reversed())
