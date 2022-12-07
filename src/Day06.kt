@@ -1,20 +1,8 @@
 import Resources.resourceAsText
 
 fun main() {
-    // my first solution, because I didn't know how to get an windowed w/ index
-    fun detectDistinctCharsOrg(input: String, distChars: Int): Int =
-        (0..input.length - distChars).firstOrNull { pos ->
-            input.substring(pos, pos + distChars).toSet().size == distChars
-        }?.let { it + distChars } ?: -1
-
-    // the solution w/ withIndex comes from Todd Ginsberg
     fun detectDistinctChars(input: String, distChars: Int): Int =
-        input.withIndex()
-            .windowed(distChars, 1)
-            .first { probe ->
-                probe.map { it.value }.toSet().size == distChars
-            }
-            .last().index + 1
+        input.windowed(distChars, 1).indexOfFirst { it.toSet().size == distChars } + distChars
 
     fun part1(input: String): Int =
         detectDistinctChars(input, 4)
