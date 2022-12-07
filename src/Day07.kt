@@ -8,7 +8,10 @@ fun main() {
         }
 
     fun part2(input: List<String>): Long =
-        TODO()
+        Computer(input).run {
+            runUntilTerminate()
+            toDelete
+        }
 
     var name = Throwable().stackTrace.first { it.className.contains("Day") }.className.split(".")[0]
     name = name.removeSuffix("Kt")
@@ -20,10 +23,10 @@ fun main() {
     println(part1(puzzleInput))
     check(part1(puzzleInput) == 1_490_523L)
 
-//    check(part2(testInput) == 0)
-//    check(part2(puzzleInput) == 0)
+    check(part2(testInput) == 24_933_642L)
+    check(part2(puzzleInput) == 12_390_492L)
 
-//    println(part2(puzzleInput))
+    println(part2(puzzleInput))
 }
 
 enum class Command {
@@ -49,11 +52,14 @@ data class Computer(val pgm: List<String>) {
     private val DIR_ENTRY = "dir "
     private val ROOT_DIR = "/"
     private val PARENT_DIR = ".."
+    private val TOTAL_DISK_CAPACITY = 70_000_000L
+    private val NEEDED_SPACE = 30_000_000L
 
     private var instructionPointer: Int = 0
     private val files = mutableMapOf<Pair<String, String>, Long>()
     private val cwd = mutableListOf<String>()
     var result = 0L
+    var toDelete = 0L
 
     fun parseInput(input: String): ProgramLine =
         if (input.startsWith(PROMPT)) {
@@ -84,26 +90,22 @@ data class Computer(val pgm: List<String>) {
     private fun executeStep(): ExecutionState =
         when (instructionPointer) {
             !in pgm.indices -> {
-//                println(files)
                 val dirs = files.keys
                     .groupBy(keySelector = { it.first }, valueTransform = { files[it] })
-//                dirs.values.forEach {println((it as List<Long>).sum()) }
                 val sumDirs = dirs.mapValues { (it.value as List<Long>).sum() }
-//                println("DIRS")
-//                println(dirs)
-//                println("\nSUMDIRS")
                 val sumInklSubDirs = sumDirs.mapValues {
                     val dirAndSubs = sumDirs.filter { sub -> sub.key.startsWith(it.key) }
                     val sums = dirAndSubs.values.sum()
-//                    println("${it.key}  -> ${it.value}")
                     sums
                 }
-//                println("\nSUM INKL SUBDIRS")
-//                println(sumInklSubDirs)
                 val smallDirs = sumInklSubDirs.filter { it.value <= 100_000 }
-//                println(smallDirs)
-//                println(smallDirs.values.sum())
                 result = smallDirs.values.sum()
+
+                val spaceUsed = sumInklSubDirs[ROOT_DIR] ?: 0
+                val spaceUnused = TOTAL_DISK_CAPACITY - spaceUsed
+                val spaceNeeded = NEEDED_SPACE - spaceUnused
+                val candidates = sumInklSubDirs.entries.filter { it.value >= spaceNeeded }
+                toDelete = candidates.map { it.value }.sorted().first()
                 ExecutionState.HALTED
             }
 
@@ -120,7 +122,6 @@ data class Computer(val pgm: List<String>) {
                         files[absFilename to inst.name] = 0
                     }
                 }
-//                println("${cwd} ${inst}")
                 instructionPointer += 1
                 ExecutionState.RUNNING
             }
