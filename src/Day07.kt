@@ -84,34 +84,41 @@ data class Computer(val pgm: List<String>) {
     private fun executeStep(): ExecutionState =
         when (instructionPointer) {
             !in pgm.indices -> {
-                println(files)
+//                println(files)
                 val dirs = files.keys
                     .groupBy(keySelector = { it.first }, valueTransform = { files[it] })
 //                dirs.values.forEach {println((it as List<Long>).sum()) }
                 val sumDirs = dirs.mapValues { (it.value as List<Long>).sum() }
-                println("DIRS")
-                println(dirs)
-                println("\nSUMDIRS")
+//                println("DIRS")
+//                println(dirs)
+//                println("\nSUMDIRS")
                 val sumInklSubDirs = sumDirs.mapValues {
                     val dirAndSubs = sumDirs.filter { sub -> sub.key.startsWith(it.key) }
                     val sums = dirAndSubs.values.sum()
-                    println("${it.key}  -> ${it.value}")
+//                    println("${it.key}  -> ${it.value}")
                     sums
                 }
-                println("\nSUM INKL SUBDIRS")
-                println(sumInklSubDirs)
+//                println("\nSUM INKL SUBDIRS")
+//                println(sumInklSubDirs)
                 val smallDirs = sumInklSubDirs.filter { it.value <= 100_000 }
-                println(smallDirs)
-                println(smallDirs.values.sum())
+//                println(smallDirs)
+//                println(smallDirs.values.sum())
                 result = smallDirs.values.sum()
                 ExecutionState.HALTED
             }
 
             else -> {
                 val inst = parseInput(pgm[instructionPointer])
-                if (inst is FileInfo) {
-                    val absFilename = "/" + inst.folder.joinToString("/")
-                    files[absFilename to inst.name] = inst.size
+                when (inst) {
+                    is FileInfo -> {
+                        val absFilename = "/" + inst.folder.joinToString("/")
+                        files[absFilename to inst.name] = inst.size
+                    }
+
+                    is DirInfo -> {
+                        val absFilename = "/" + inst.folder.joinToString("/")
+                        files[absFilename to inst.name] = 0
+                    }
                 }
 //                println("${cwd} ${inst}")
                 instructionPointer += 1
