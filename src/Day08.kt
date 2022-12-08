@@ -49,31 +49,30 @@ data class TreeMap(val trees: Map<Tree, Int>) {
 }
 
 infix fun Tree.visibleIn(treeMap: TreeMap): Boolean {
+    fun visibleTrees(trees: List<Tree>, maxHeight: Int) =
+        trees.all { treeMap.trees.getValue(it) < maxHeight }
+
     val treeHeight = treeMap.trees.getValue(this)
 
-    val upVisible = treeMap.upTrees(this).all { treeMap.trees.getValue(it) < treeHeight }
-    val downVisible = treeMap.downTrees(this).all { treeMap.trees.getValue(it) < treeHeight }
-    val leftVisible = treeMap.leftTrees(this).all { treeMap.trees.getValue(it) < treeHeight }
-    val rightVisible = treeMap.rightTrees(this).all { treeMap.trees.getValue(it) < treeHeight }
+    val upVisible = visibleTrees(treeMap.upTrees(this), treeHeight)
+    val downVisible = visibleTrees(treeMap.downTrees(this), treeHeight)
+    val leftVisible = visibleTrees(treeMap.leftTrees(this), treeHeight)
+    val rightVisible = visibleTrees(treeMap.rightTrees(this), treeHeight)
+
     return upVisible || downVisible || leftVisible || rightVisible
 }
 
 fun Tree.scenicScore(treeMap: TreeMap): Int {
     val treeHeight = treeMap.trees.getValue(this)
 
-    val upTrees = treeMap.upTrees(this)
-    val downTrees = treeMap.downTrees(this)
-    val leftTrees = treeMap.leftTrees(this)
-    val rightTrees = treeMap.rightTrees(this)
-
-    var upVisible = upTrees.windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
-    upVisible = if (upVisible == -1) upTrees.size else upVisible + 1
-    var downVisible = downTrees.windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
-    downVisible = if (downVisible == -1) downTrees.size else downVisible + 1
-    var leftVisible = leftTrees.windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
-    leftVisible = if (leftVisible == -1) leftTrees.size else leftVisible + 1
-    var rightVisible = rightTrees.windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
-    rightVisible = if (rightVisible == -1) rightTrees.size else rightVisible + 1
+    var upVisible = treeMap.upTrees(this).windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
+    upVisible = if (upVisible == -1) treeMap.upTrees(this).size else upVisible + 1
+    var downVisible = treeMap.downTrees(this).windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
+    downVisible = if (downVisible == -1) treeMap.downTrees(this).size else downVisible + 1
+    var leftVisible = treeMap.leftTrees(this).windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
+    leftVisible = if (leftVisible == -1) treeMap.leftTrees(this).size else leftVisible + 1
+    var rightVisible = treeMap.rightTrees(this).windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
+    rightVisible = if (rightVisible == -1) treeMap.rightTrees(this).size else rightVisible + 1
 
     return upVisible * downVisible * leftVisible * rightVisible
 }
