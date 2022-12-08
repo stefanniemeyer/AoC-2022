@@ -26,7 +26,6 @@ fun main() {
     check(part2(testInput) == 8)
     println(part2(puzzleInput))
     check(part2(puzzleInput) == 385_112)
-
 }
 
 fun List<String>.toPointMap(): TreeMap =
