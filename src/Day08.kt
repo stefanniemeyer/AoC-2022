@@ -1,16 +1,17 @@
 import Resources.resourceAsList
 
 fun main() {
-    fun part1(input: TreeMap): Int {
-        val visi = input.keys.map { tree ->
+    fun part1(input: TreeMap): Int =
+        input.trees.keys.map { tree ->
             tree visibleIn input
         }.count { it }
 
-        return visi
+    fun part2(input: TreeMap): Int {
+        val scores = input.trees.keys.map { tree ->
+            tree.scenicScore(input)
+        }
+        return scores.max()
     }
-
-    fun part2(input: TreeMap): Int =
-        TODO()
 
     var name = Throwable().stackTrace.first { it.className.contains("Day") }.className.split(".")[0]
     name = name.removeSuffix("Kt")
@@ -22,35 +23,58 @@ fun main() {
     println(part1(puzzleInput))
     check(part1(puzzleInput) == 1_820)
 
-//    check(part2(testInput) == 0)
-//    check(part2(puzzleInput) == 0)
+    check(part2(testInput) == 8)
+    println(part2(puzzleInput))
+    check(part2(puzzleInput) == 385_112)
 
-//    println(part2(puzzleInput))
 }
 
 fun List<String>.toPointMap(): TreeMap =
-    this.flatMapIndexed { row, line ->
+    TreeMap(this.flatMapIndexed { row, line ->
         line.mapIndexed { col, tree ->
             Point2D(col, row) to tree.digitToInt()
         }
-    }.toMap()
+    }.toMap())
 
-typealias TreeMap = Map<Point2D, Int>
 typealias Tree = Point2D
 
-infix fun Tree.visibleIn(trees: TreeMap): Boolean {
+data class TreeMap(val trees: Map<Tree, Int>) {
     val points = trees.keys.toList()
     val rows = points.maxOf { it.y }
     val columns = points.maxOf { it.x }
-    val treeHeight = trees.getValue(this)
 
-    val upTrees = (this lineTo Point2D(this.x, 0)) - this
-    val downTrees = (this lineTo Point2D(this.x, columns)) - this
-    val leftTrees = (this lineTo Point2D(0, this.y)) - this
-    val rightTrees = (this lineTo Point2D(rows, this.y)) - this
-    val upVisible = upTrees.all { trees.getValue(it) < treeHeight }
-    val downVisible = downTrees.all { trees.getValue(it) < treeHeight }
-    val leftVisible = leftTrees.all { trees.getValue(it) < treeHeight }
-    val rightVisible = rightTrees.all { trees.getValue(it) < treeHeight }
+    fun upTrees(tree: Tree) = (tree lineTo Point2D(tree.x, 0)) - tree
+    fun downTrees(tree: Tree) = (tree lineTo Point2D(tree.x, columns)) - tree
+    fun leftTrees(tree: Tree) = (tree lineTo Point2D(0, tree.y)) - tree
+    fun rightTrees(tree: Tree) = (tree lineTo Point2D(rows, tree.y)) - tree
+}
+
+infix fun Tree.visibleIn(treeMap: TreeMap): Boolean {
+    val treeHeight = treeMap.trees.getValue(this)
+
+    val upVisible = treeMap.upTrees(this).all { treeMap.trees.getValue(it) < treeHeight }
+    val downVisible = treeMap.downTrees(this).all { treeMap.trees.getValue(it) < treeHeight }
+    val leftVisible = treeMap.leftTrees(this).all { treeMap.trees.getValue(it) < treeHeight }
+    val rightVisible = treeMap.rightTrees(this).all { treeMap.trees.getValue(it) < treeHeight }
     return upVisible || downVisible || leftVisible || rightVisible
+}
+
+fun Tree.scenicScore(treeMap: TreeMap): Int {
+    val treeHeight = treeMap.trees.getValue(this)
+
+    val upTrees = treeMap.upTrees(this)
+    val downTrees = treeMap.downTrees(this)
+    val leftTrees = treeMap.leftTrees(this)
+    val rightTrees = treeMap.rightTrees(this)
+
+    var upVisible = upTrees.windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
+    upVisible = if (upVisible == -1) upTrees.size else upVisible + 1
+    var downVisible = downTrees.windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
+    downVisible = if (downVisible == -1) downTrees.size else downVisible + 1
+    var leftVisible = leftTrees.windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
+    leftVisible = if (leftVisible == -1) leftTrees.size else leftVisible + 1
+    var rightVisible = rightTrees.windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
+    rightVisible = if (rightVisible == -1) rightTrees.size else rightVisible + 1
+
+    return upVisible * downVisible * leftVisible * rightVisible
 }
