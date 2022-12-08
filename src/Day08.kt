@@ -1,18 +1,10 @@
 import Resources.resourceAsList
 
 fun main() {
-    fun List<String>.toPointMap(): TreeMap =
-        this.flatMapIndexed { row, line ->
-            line.mapIndexed { col, tree ->
-                Point2D(col, row) to tree.digitToInt()
-            }
-        }.toMap()
-
     fun part1(input: TreeMap): Int {
         val visi = input.keys.map { tree ->
-            println("${tree} -> ${tree visibleIn input}")
             tree visibleIn input
-        }.size - 4
+        }.count { it }
 
         return visi
     }
@@ -35,6 +27,13 @@ fun main() {
 
 //    println(part2(puzzleInput))
 }
+
+fun List<String>.toPointMap(): TreeMap =
+    this.flatMapIndexed { row, line ->
+        line.mapIndexed { col, tree ->
+            Point2D(col, row) to tree.digitToInt()
+        }
+    }.toMap()
 
 typealias TreeMap = Map<Point2D, Int>
 typealias Tree = Point2D
