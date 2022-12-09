@@ -64,7 +64,7 @@ fun String.toMovement(): Movement {
 
 fun neededTailPos(head: Point2D, tail:Point2D): Point2D =
     when {
-        tail in head.neighbors -> tail
+        tail.chebyshevDistanceTo(head) <= 1 -> tail
         else -> tail + Point2D((head.x - tail.x).sign, (head.y - tail.y).sign)
 
     }

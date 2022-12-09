@@ -4,6 +4,7 @@
 
 import kotlin.math.absoluteValue
 import kotlin.math.sign
+import kotlin.math.max
 
 sealed class Direction {
     abstract val turnLeft: Direction
@@ -86,8 +87,15 @@ data class Point2D(val x: Int, val y: Int) : Point {
             Direction.West -> Point2D(x - offset, y)
         }
 
-    infix fun distanceTo(other: Point2D): Int =
+    // calculate Manhattan distance between two points
+    // https://de.wikipedia.org/wiki/Manhattan-Metrik
+    infix fun manhattanDistanceTo(other: Point2D): Int =
         (x - other.x).absoluteValue + (y - other.y).absoluteValue
+
+    // calculate Chebyshev's chessboard distance
+    // https://en.wikipedia.org/wiki/Chebyshev_distance
+    infix fun chebyshevDistanceTo(other: Point2D): Int =
+        max((x - other.x).absoluteValue, (y - other.y).absoluteValue)
 
     fun rotateLeft(): Point2D =
         Point2D(x = y * -1, y = x)
