@@ -1,3 +1,8 @@
+/**
+ * Advent of Code 2022, Day 6: Tuning Trouble
+ * Problem Description: https://adventofcode.com/2022/day/6
+ */
+
 import Resources.resourceAsText
 
 fun main() {
@@ -17,11 +22,10 @@ fun main() {
     val puzzleInput = resourceAsText(name)
 
     check(part1(testInput) == 7)
-    check(part1(puzzleInput) == 1_965)
     println(part1(puzzleInput))
+    check(part1(puzzleInput) == 1_965)
 
     check(part2(testInput) == 19)
-    check(part2(puzzleInput) == 2_773)
-
     println(part2(puzzleInput))
+    check(part2(puzzleInput) == 2_773)
 }

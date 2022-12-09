@@ -1,3 +1,8 @@
+/**
+ * Advent of Code 2022, Day 9: Rope Bridge
+ * Problem Description: https://adventofcode.com/2022/day/9
+ */
+
 import Resources.resourceAsList
 import kotlin.math.sign
 
@@ -5,13 +10,11 @@ fun main() {
     fun part1(input: List<Movement>): Int {
         var head = Point2D.ORIGIN
         var tail = Point2D.ORIGIN
-        val visitedHead = mutableSetOf<Point2D>(head)
         val visitedTail = mutableSetOf<Point2D>(tail)
         input.forEach { instr ->
             repeat(instr.distance) {
                 head = head.move(instr.direction)
                 tail = neededTailPos(head, tail)
-                visitedHead += head
                 visitedTail += tail
             }
         }
@@ -61,7 +64,6 @@ fun String.toMovement(): Movement {
 
 fun neededTailPos(head: Point2D, tail:Point2D): Point2D =
     when {
-        head == tail -> tail
         tail in head.neighbors -> tail
         else -> tail + Point2D((head.x - tail.x).sign, (head.y - tail.y).sign)
 

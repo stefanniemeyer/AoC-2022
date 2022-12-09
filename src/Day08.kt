@@ -1,3 +1,8 @@
+/**
+ * Advent of Code 2022, Day 8: Treetop Tree House
+ * Problem Description: https://adventofcode.com/2022/day/8
+ */
+
 import Resources.resourceAsList
 
 fun main() {
@@ -54,25 +59,17 @@ infix fun Tree.visibleIn(treeMap: TreeMap): Boolean {
 
     val treeHeight = treeMap.trees.getValue(this)
 
-    val upVisible = visibleTrees(treeMap.upTrees(this), treeHeight)
-    val downVisible = visibleTrees(treeMap.downTrees(this), treeHeight)
-    val leftVisible = visibleTrees(treeMap.leftTrees(this), treeHeight)
-    val rightVisible = visibleTrees(treeMap.rightTrees(this), treeHeight)
-
-    return upVisible || downVisible || leftVisible || rightVisible
+    return listOf(treeMap.upTrees(this), treeMap.downTrees(this), treeMap.leftTrees(this), treeMap.rightTrees(this))
+        .map { trees ->
+            visibleTrees(trees, treeHeight)
+        }.any { it }
 }
 
 fun Tree.scenicScore(treeMap: TreeMap): Int {
     val treeHeight = treeMap.trees.getValue(this)
 
-    var upVisible = treeMap.upTrees(this).windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
-    upVisible = if (upVisible == -1) treeMap.upTrees(this).size else upVisible + 1
-    var downVisible = treeMap.downTrees(this).windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
-    downVisible = if (downVisible == -1) treeMap.downTrees(this).size else downVisible + 1
-    var leftVisible = treeMap.leftTrees(this).windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
-    leftVisible = if (leftVisible == -1) treeMap.leftTrees(this).size else leftVisible + 1
-    var rightVisible = treeMap.rightTrees(this).windowed(1).indexOfFirst { treeMap.trees.getValue(it[0]) >= treeHeight }
-    rightVisible = if (rightVisible == -1) treeMap.rightTrees(this).size else rightVisible + 1
-
-    return upVisible * downVisible * leftVisible * rightVisible
+    return listOf(treeMap.upTrees(this), treeMap.downTrees(this), treeMap.leftTrees(this), treeMap.rightTrees(this))
+        .map { trees ->
+            trees.takeUntil { treeMap.trees.getValue(it) >= treeHeight }.size
+        }.product()
 }

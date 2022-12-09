@@ -1,3 +1,8 @@
+/**
+ * Advent of Code 2022, Day 3: Rucksack Reorganization
+ * Problem Description: https://adventofcode.com/2022/day/3
+ */
+
 import Resources.resourceAsList
 
 fun main() {
@@ -21,12 +26,12 @@ fun main() {
     val puzzleInput = resourceAsList(name)
 
     check(part1(testInput) == 157)
-    check(part1(puzzleInput) == 7_817)
     println(part1(puzzleInput))
+    check(part1(puzzleInput) == 7_817)
 
     check(part2(testInput) == 70)
-    check(part2(puzzleInput) == 2_444)
     println(part2(puzzleInput))
+    check(part2(puzzleInput) == 2_444)
 }
 
 fun Char.priority(): Int = when (this) {

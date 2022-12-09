@@ -1,3 +1,8 @@
+/**
+ * Advent of Code 2022, Day 2: Rock Paper Scissors
+ * Problem Description: https://adventofcode.com/2022/day/2
+ */
+
 import Resources.resourceAsList
 
 fun main() {
@@ -13,21 +18,20 @@ fun main() {
 
     var name = Throwable().stackTrace.first { it.className.contains("Day") }.className.split(".")[0]
     name = name.removeSuffix("Kt")
-    // test if implementation meets criteria from the description, like:
+
     val testInput = resourceAsList(fileName = "${name}_test").map { it.toPair() }
     val puzzleInput = resourceAsList(fileName = name).map { it.toPair() }
 
     check(part1(testInput) == 15)
-    check(part1(puzzleInput) == 12156)
     println(part1(puzzleInput))
+    check(part1(puzzleInput) == 12156)
 
     val testInput2 = resourceAsList(fileName = "${name}_test").map { it.toPairByResult() }
     val puzzleInput2 = resourceAsList(fileName = name).map { it.toPairByResult() }
 
     check(part2(testInput2) == 12)
-    check(part2(puzzleInput2) == 10835)
-
     println(part2(puzzleInput2))
+    check(part2(puzzleInput2) == 10835)
 }
 
 fun String.toPair(): Pair<String, String> =

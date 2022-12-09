@@ -1,3 +1,8 @@
+/**
+ * Advent of Code 2022, Day 7: No Space Left On Device
+ * Problem Description: https://adventofcode.com/2022/day/7
+ */
+
 import Resources.resourceAsList
 
 fun main() {
@@ -24,9 +29,8 @@ fun main() {
     check(part1(puzzleInput) == 1_490_523L)
 
     check(part2(testInput) == 24_933_642L)
-    check(part2(puzzleInput) == 12_390_492L)
-
     println(part2(puzzleInput))
+    check(part2(puzzleInput) == 12_390_492L)
 }
 
 enum class Command {

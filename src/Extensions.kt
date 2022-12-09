@@ -21,6 +21,16 @@ fun <T> Iterator<Char>.executeUntilEmpty(function: (Iterator<Char>) -> T): List<
     return output
 }
 
+inline fun <T> Iterable<T>.takeUntil(predicate: (T) -> Boolean): List<T> {
+    val list = ArrayList<T>()
+    for (item in this) {
+        list.add(item)
+        if (predicate(item))
+            break
+    }
+    return list
+}
+
 fun <T> Collection<T>.pairs(): List<Pair<T, T>> =
     this.flatMapIndexed { index, a ->
         this.drop(index).map { b -> a to b }
@@ -35,8 +45,17 @@ fun Array<CharArray>.print() {
     }
 }
 
+fun Iterable<Int>.product(): Int =
+    reduce(Int::times)
+
+fun Iterable<Long>.product(): Long =
+    reduce(Long::times)
+
+fun Char.asLong(): Long =
+    digitToInt().toLong()
+
 fun Array<CharArray>.peer(posRow: Int, posCol: Int, offsetRow: Int, offsetCol: Int): Pair<Int, Int> =
-    Pair((posRow + offsetRow) % this.size, (posCol + offsetCol) % this.first().size)
+    Pair((posRow + offsetRow) % size, (posCol + offsetCol) % first().size)
 
 infix fun IntRange.intersects(other: IntRange): Boolean =
     first <= other.last && last >= other.first

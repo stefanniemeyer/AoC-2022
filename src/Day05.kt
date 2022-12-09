@@ -1,3 +1,8 @@
+/**
+ * Advent of Code 2022, Day 5: Supply Stacks
+ * Problem Description: https://adventofcode.com/2022/day/5
+ */
+
 import Resources.resourceAsText
 
 typealias CrateStacks = List<ArrayDeque<Char>>
@@ -17,11 +22,7 @@ fun String.toMove(): Move {
 fun parseInput(input: String): Pair<CrateStacks, Moves> {
     val (cratesLines, moveLines) = input.split("\n\n")
     val maxStack = cratesLines.trim().last().digitToInt()
-    val crateStacks: CrateStacks = buildList {
-        (1..maxStack).forEach {
-            add(ArrayDeque())
-        }
-    }
+    val crateStacks = List<ArrayDeque<Char>>(maxStack) { ArrayDeque() }
 
     cratesLines.lines().dropLast(1).forEach { line ->
         (0..(maxStack - 1)).forEach { stack ->
@@ -63,11 +64,10 @@ fun main() {
     val puzzleInput = resourceAsText(name)
 
     check(part1(testInput) == "CMZ")
-    check(part1(puzzleInput) == "TDCHVHJTG")
     println(part1(puzzleInput))
+    check(part1(puzzleInput) == "TDCHVHJTG")
 
     check(part2(testInput) == "MCD")
-    check(part2(puzzleInput) == "NGCMPJLHV")
-
     println(part2(puzzleInput))
+    check(part2(puzzleInput) == "NGCMPJLHV")
 }
