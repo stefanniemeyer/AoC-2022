@@ -12,10 +12,10 @@ sealed class Direction {
 
     operator fun invoke(dir: String): Direction =
         when (dir) {
-            "N" -> North
-            "S" -> South
-            "E" -> East
-            "W" -> West
+            "N", "U" -> North
+            "S", "D" -> South
+            "E", "R" -> East
+            "W", "L" -> West
             "forward" -> East
             "up" -> North
             "down" -> South
@@ -47,6 +47,15 @@ sealed class Direction {
     }
 }
 
+fun Char.toDirection(): Direction =
+    when (this) {
+        in listOf('N', 'U') -> Direction.North
+        in listOf('S', 'D') -> Direction.South
+        in listOf('W', 'L') -> Direction.West
+        in listOf('E', 'R') -> Direction.East
+        else -> throw IllegalArgumentException("No such direction $this")
+    }
+
 data class Point2D(val x: Int, val y: Int) : Point {
     override val neighbors: List<Point2D> by lazy {
         (x - 1..x + 1).flatMap { dx ->
@@ -65,6 +74,17 @@ data class Point2D(val x: Int, val y: Int) : Point {
 
     operator fun times(by: Int): Point2D =
         Point2D(x * by, y * by)
+
+    fun move(direction: Direction): Point2D =
+        this.moveTimes(direction, 1)
+
+    fun moveTimes(direction: Direction, offset: Int): Point2D =
+        when (direction) {
+            Direction.North -> Point2D(x, y + offset)
+            Direction.South -> Point2D(x, y - offset)
+            Direction.East -> Point2D(x + offset, y)
+            Direction.West -> Point2D(x - offset, y)
+        }
 
     infix fun distanceTo(other: Point2D): Int =
         (x - other.x).absoluteValue + (y - other.y).absoluteValue
@@ -109,7 +129,7 @@ fun Set<Point2D>.print() {
     val yMin = this.minOf { it.y }
     val yMax = this.maxOf { it.y }
 
-    for (y in yMin .. yMax) {
+    for (y in yMin..yMax) {
         for (x in xMin..xMax) {
             print(if (this.contains(Point2D(x, y))) '#' else '.')
         }
