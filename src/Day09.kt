@@ -1,11 +1,12 @@
 import Resources.resourceAsList
+import kotlin.math.sign
 
 fun main() {
     fun part1(input: List<Movement>): Int {
         var head = Point2D.ORIGIN
         var tail = Point2D.ORIGIN
-        var visitedHead = mutableSetOf<Point2D>(head)
-        var visitedTail = mutableSetOf<Point2D>(tail)
+        val visitedHead = mutableSetOf<Point2D>(head)
+        val visitedTail = mutableSetOf<Point2D>(tail)
         input.forEach { instr ->
             repeat(instr.distance) {
                 head = head.move(instr.direction)
@@ -20,8 +21,8 @@ fun main() {
     fun part2(input: List<Movement>): Int {
         val MAX_KNOTS = 9
         val HEAD = 0
-        var knots = MutableList(MAX_KNOTS + 1) { Point2D.ORIGIN }
-        var visitedLastKnot = mutableSetOf(knots[MAX_KNOTS])
+        val knots = MutableList(MAX_KNOTS + 1) { Point2D.ORIGIN }
+        val visitedLastKnot = mutableSetOf(knots[MAX_KNOTS])
         input.forEach { instr ->
             repeat(instr.distance) {
                 knots[HEAD] = knots[HEAD].move(instr.direction)
@@ -62,12 +63,6 @@ fun neededTailPos(head: Point2D, tail:Point2D): Point2D =
     when {
         head == tail -> tail
         tail in head.neighbors -> tail
-        else -> tail + Point2D(sign(head.x - tail.x), sign(head.y - tail.y))
+        else -> tail + Point2D((head.x - tail.x).sign, (head.y - tail.y).sign)
 
     }
-
-fun sign(i: Int) = when {
-    i > 0 -> 1
-    i < 0 -> -1
-    else -> 0
-}
