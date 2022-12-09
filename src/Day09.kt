@@ -1,5 +1,4 @@
 import Resources.resourceAsList
-import kotlin.math.sign
 
 fun main() {
     fun part1(input: List<Movement>): Int {
@@ -11,17 +10,30 @@ fun main() {
             repeat(instr.distance) {
                 head = head.move(instr.direction)
                 tail = neededTailPos(head, tail)
-//                println(head)
                 visitedHead += head
                 visitedTail += tail
             }
         }
-//        println(visitedHead)
         return visitedTail.size
     }
 
-//    fun part2(input: List<Movement>): Int =
-//        TODO()
+    fun part2(input: List<Movement>): Int {
+        val MAX_KNOTS = 9
+        val HEAD = 0
+        var knots = MutableList(MAX_KNOTS + 1) { Point2D.ORIGIN }
+        var visitedLastKnot = mutableSetOf(knots[MAX_KNOTS])
+        input.forEach { instr ->
+            repeat(instr.distance) {
+                knots[HEAD] = knots[HEAD].move(instr.direction)
+                for (i in 1 .. MAX_KNOTS) {
+                    knots[i] = neededTailPos(knots[i - 1], knots[i])
+                }
+                visitedLastKnot += knots[MAX_KNOTS]
+            }
+        }
+
+        return visitedLastKnot.size
+    }
 
     var name = Throwable().stackTrace.first { it.className.contains("Day") }.className.split(".")[0]
     name = name.removeSuffix("Kt")
@@ -33,9 +45,10 @@ fun main() {
     println(part1(puzzleInput))
     check(part1(puzzleInput) == 5_902)
 
-//    check(part2(testInput) == 0)
-//    println(part2(puzzleInput))
-//    check(part2(puzzleInput) == 0)
+    val testInput2 = resourceAsList(fileName = "${name}_test2").map { it.toMovement() }
+    check(part2(testInput2) == 36)
+    println(part2(puzzleInput))
+    check(part2(puzzleInput) == 2_445)
 }
 
 data class Movement(val direction: Direction, val distance: Int)
