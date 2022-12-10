@@ -117,12 +117,12 @@ data class Computer(val pgm: List<String>) {
                 val inst = parseInput(pgm[instructionPointer])
                 when (inst) {
                     is FileInfo -> {
-                        val absFilename = "/" + inst.folder.joinToString("/")
+                        val absFilename = inst.folder.joinToString(prefix = "/", separator = "/")
                         files[absFilename to inst.name] = inst.size
                     }
 
                     is DirInfo -> {
-                        val absFilename = "/" + inst.folder.joinToString("/")
+                        val absFilename = inst.folder.joinToString(prefix = "/", separator = "/")
                         files[absFilename to inst.name] = 0
                     }
                 }
