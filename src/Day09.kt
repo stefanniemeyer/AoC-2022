@@ -29,7 +29,7 @@ fun main() {
         input.forEach { instr ->
             repeat(instr.distance) {
                 knots[HEAD] = knots[HEAD].move(instr.direction)
-                for (i in 1 .. MAX_KNOTS) {
+                for (i in 1..MAX_KNOTS) {
                     knots[i] = neededTailPos(knots[i - 1], knots[i])
                 }
                 visitedLastKnot += knots[MAX_KNOTS]
@@ -39,9 +39,7 @@ fun main() {
         return visitedLastKnot.size
     }
 
-    var name = Throwable().stackTrace.first { it.className.contains("Day") }.className.split(".")[0]
-    name = name.removeSuffix("Kt")
-
+    val name = getClassName()
     val testInput = resourceAsList(fileName = "${name}_test").map { it.toMovement() }
     val puzzleInput = resourceAsList(name).map { it.toMovement() }
 
@@ -56,13 +54,14 @@ fun main() {
 }
 
 data class Movement(val direction: Direction, val distance: Int)
+
 fun String.toMovement(): Movement {
     val direction = this[0].toDirection()
     val distance = this.substringAfter(" ").toInt()
     return Movement(direction, distance)
 }
 
-fun neededTailPos(head: Point2D, tail:Point2D): Point2D =
+fun neededTailPos(head: Point2D, tail: Point2D): Point2D =
     when {
         tail.chebyshevDistanceTo(head) <= 1 -> tail
         else -> tail + Point2D((head.x - tail.x).sign, (head.y - tail.y).sign)

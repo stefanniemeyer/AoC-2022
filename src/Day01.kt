@@ -17,14 +17,15 @@ fun main() {
             it.trim().lines().sumOf(String::toInt)
         }.sortedDescending()
 
-    val testInput = readInput("Day01_test")
-    val input = readInput("Day01")
+    val name = getClassName()
+    val testInput = readInput(fileName = "${name}_test")
+    val puzzleInput = readInput(fileName = name)
 
     check(part1(testInput) == 24_000)
-    println(part1(input))
-    check(part1(input) == 70_764)
+    println(part1(puzzleInput))
+    check(part1(puzzleInput) == 70_764)
 
     check(part2(testInput) == 45_000)
-    println(part2(input))
-    check(part2(input) == 203_905)
+    println(part2(puzzleInput))
+    check(part2(puzzleInput) == 203_905)
 }

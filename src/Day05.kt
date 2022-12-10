@@ -57,9 +57,7 @@ fun main() {
         return crateStacks.map { it.last() }.joinToString("")
     }
 
-    var name = Throwable().stackTrace.first { it.className.contains("Day") }.className.split(".")[0]
-    name = name.removeSuffix("Kt")
-
+    val name = getClassName()
     val testInput = resourceAsText(fileName = "${name}_test")
     val puzzleInput = resourceAsText(name)
 

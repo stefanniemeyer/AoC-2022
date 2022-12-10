@@ -15,9 +15,7 @@ fun main() {
     fun part2(input: String): Int =
         detectDistinctChars(input, 14)
 
-    var name = Throwable().stackTrace.first { it.className.contains("Day") }.className.split(".")[0]
-    name = name.removeSuffix("Kt")
-
+    val name = getClassName()
     val testInput = resourceAsText(fileName = "${name}_test")
     val puzzleInput = resourceAsText(name)
 

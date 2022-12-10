@@ -16,9 +16,7 @@ fun main() {
             acc + score(op.first, op.second)
         }
 
-    var name = Throwable().stackTrace.first { it.className.contains("Day") }.className.split(".")[0]
-    name = name.removeSuffix("Kt")
-
+    val name = getClassName()
     val testInput = resourceAsList(fileName = "${name}_test").map { it.toPair() }
     val puzzleInput = resourceAsList(fileName = name).map { it.toPair() }
 

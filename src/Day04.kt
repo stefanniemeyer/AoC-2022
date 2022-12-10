@@ -9,31 +9,26 @@ typealias Assignment = Pair<IntRange, IntRange>
 
 fun String.toIntRange(): IntRange {
     val (from, to) = this.split("-").map(String::toInt)
-    return from .. to
+    return from..to
 }
 
 infix fun IntRange.completelyOverlaps(other: IntRange): Boolean =
     first <= other.first && other.last <= last || other.first <= first && last <= other.last
 
-fun parseInput(input: List<String>): List<Assignment> =
-    input.map { line ->
-        line.split(",")
-    }.map { it.first().toIntRange() to it.last().toIntRange() }
+fun parseInput(input: List<String>): List<Assignment> = input.map { line ->
+    line.split(",")
+}.map { it.first().toIntRange() to it.last().toIntRange() }
 
 fun main() {
-    fun part1(input: List<Assignment>): Int =
-        input.map { (a, b) ->
-            a completelyOverlaps b
-        }.count { it }
+    fun part1(input: List<Assignment>): Int = input.map { (a, b) ->
+        a completelyOverlaps b
+    }.count { it }
 
-    fun part2(input: List<Assignment>): Int =
-        input.map { (a, b) ->
-            a intersects b
-        }.count { it }
+    fun part2(input: List<Assignment>): Int = input.map { (a, b) ->
+        a intersects b
+    }.count { it }
 
-    var name = Throwable().stackTrace.first { it.className.contains("Day") }.className.split(".")[0]
-    name = name.removeSuffix("Kt")
-
+    val name = getClassName()
     val testInput = parseInput(resourceAsList(fileName = "${name}_test"))
     val puzzleInput = parseInput(resourceAsList(name))
 
