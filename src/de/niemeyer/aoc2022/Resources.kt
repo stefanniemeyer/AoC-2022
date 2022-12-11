@@ -1,6 +1,4 @@
-/*
- * Copyright (c) 2020 by Todd Ginsberg
- */
+package de.niemeyer.aoc2022
 
 import java.io.File
 
@@ -67,4 +65,3 @@ internal object Resources {
         }.toTypedArray()
     }
 }
-

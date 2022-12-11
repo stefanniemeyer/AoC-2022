@@ -3,7 +3,9 @@
  * Problem Description: https://adventofcode.com/2022/day/4
  */
 
-import Resources.resourceAsList
+package de.niemeyer.aoc2022
+
+import de.niemeyer.aoc2022.Resources.resourceAsList
 
 typealias Assignment = Pair<IntRange, IntRange>
 

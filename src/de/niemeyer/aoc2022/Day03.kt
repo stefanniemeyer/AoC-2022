@@ -3,7 +3,9 @@
  * Problem Description: https://adventofcode.com/2022/day/3
  */
 
-import Resources.resourceAsList
+package de.niemeyer.aoc2022
+
+import de.niemeyer.aoc2022.Resources.resourceAsList
 
 fun main() {
     fun part1(input: List<String>): Int =

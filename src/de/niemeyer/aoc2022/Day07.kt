@@ -1,9 +1,11 @@
+package de.niemeyer.aoc2022
+
 /**
  * Advent of Code 2022, Day 7: No Space Left On Device
  * Problem Description: https://adventofcode.com/2022/day/7
  */
 
-import Resources.resourceAsList
+import de.niemeyer.aoc2022.Resources.resourceAsList
 
 fun main() {
     fun part1(input: List<String>): Long =

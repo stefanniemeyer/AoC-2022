@@ -1,9 +1,11 @@
+package de.niemeyer.aoc2022
+
 /**
  * Advent of Code 2022, Day 5: Supply Stacks
  * Problem Description: https://adventofcode.com/2022/day/5
  */
 
-import Resources.resourceAsText
+import de.niemeyer.aoc2022.Resources.resourceAsText
 
 typealias CrateStacks = List<ArrayDeque<Char>>
 

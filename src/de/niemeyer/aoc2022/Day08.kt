@@ -1,9 +1,11 @@
+package de.niemeyer.aoc2022
+
 /**
- * Advent of Code 2022, Day 8: Treetop Tree House
+ * Advent of Code 2022, Day 8: Treetop kotlin.aoc2022.niemeyer.aoc2022.Tree House
  * Problem Description: https://adventofcode.com/2022/day/8
  */
 
-import Resources.resourceAsList
+import de.niemeyer.aoc2022.Resources.resourceAsList
 
 fun main() {
     fun part1(input: TreeMap): Int =

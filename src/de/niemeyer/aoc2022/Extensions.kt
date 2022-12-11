@@ -1,3 +1,5 @@
+package de.niemeyer.aoc2022
+
 fun Iterator<Char>.next(size: Int): String =
     (1..size).map { next() }.joinToString("")
 

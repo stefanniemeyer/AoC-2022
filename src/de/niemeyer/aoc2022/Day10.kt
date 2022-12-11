@@ -1,9 +1,11 @@
+package de.niemeyer.aoc2022
+
 /**
  * Advent of Code 2022, Day 10: Cathode-Ray Tube
  * Problem Description: https://adventofcode.com/2022/day/10
  */
 
-import Resources.resourceAsList
+import de.niemeyer.aoc2022.Resources.resourceAsList
 
 fun main() {
     fun part1(input: Map<Int, Int>): Int =

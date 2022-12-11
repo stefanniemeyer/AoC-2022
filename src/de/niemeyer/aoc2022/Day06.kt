@@ -1,9 +1,11 @@
+package de.niemeyer.aoc2022
+
 /**
  * Advent of Code 2022, Day 6: Tuning Trouble
  * Problem Description: https://adventofcode.com/2022/day/6
  */
 
-import Resources.resourceAsText
+import de.niemeyer.aoc2022.Resources.resourceAsText
 
 fun main() {
     fun detectDistinctChars(input: String, distChars: Int): Int =

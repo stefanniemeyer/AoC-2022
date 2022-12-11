@@ -1,9 +1,11 @@
+package de.niemeyer.aoc2022
+
 /**
  * Advent of Code 2022, Day 9: Rope Bridge
  * Problem Description: https://adventofcode.com/2022/day/9
  */
 
-import Resources.resourceAsList
+import de.niemeyer.aoc2022.Resources.resourceAsList
 import kotlin.math.sign
 
 fun main() {

@@ -1,4 +1,4 @@
-/*
+package de.niemeyer.aoc2022/*
  * Most of the code comes from Todd Ginsberg
  */
 
