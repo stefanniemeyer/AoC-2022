@@ -8,20 +8,17 @@ package de.niemeyer.aoc2022
 import de.niemeyer.aoc2022.Resources.resourceAsText
 
 fun main() {
-    fun part1(input: List<Monkey>, rounds: Int): Long {
+    fun solve(input: List<Monkey>, rounds: Int, adjust: (Long) -> Long): Long {
         val monkeys = input.toMutableList()
         repeat(rounds) {
             for (idx in 0 until monkeys.size) {
                 val monkey = monkeys[idx]
-//                println(" Monkey ${idx}:")
                 val newWorryLevels = monkey.items.map {
-                    calc(it, monkey.operand, monkey.operation) / 3
+                    adjust(calc(it, monkey.operand, monkey.operation))
                 }
-//                println(newWorryLevels)
                 newWorryLevels.forEach {
                     val target = monkey.test.targetMoneky(it)
                     monkeys[target].items.add(it)
-//                    println("   $it to monkey ${monkey.test.targetMoneky(it)}")
                 }
                 monkey.itemCounter += monkey.items.size
                 monkey.items.removeIf { true }
@@ -31,57 +28,31 @@ fun main() {
         return monkeys.sortedBy { it.itemCounter }.takeLast(2).map { it.itemCounter }.product()
     }
 
-    fun part2(input: List<Monkey>, rounds: Int): Long {
-        val monkeys = input.toMutableList()
-        val gcd = monkeys.map { it.test.divider }.product()
-        repeat(rounds) {
-            for (idx in 0 until monkeys.size) {
-                val monkey = monkeys[idx]
-//                println(" Monkey ${idx}:")
-                val newWorryLevels = monkey.items.map {
-                    calc(it, monkey.operand, monkey.operation) % gcd
-                }
-//                println(newWorryLevels)
-                newWorryLevels.forEach {
-                    val target = monkey.test.targetMoneky(it)
-                    monkeys[target].items.add(it)
-//                    println("   $it to monkey ${monkey.test.targetMoneky(it)}")
-                }
-                monkey.itemCounter += monkey.items.size
-                monkey.items.removeIf { true }
-                monkeys[idx] = monkey
-            }
-        }
-        return monkeys.sortedBy { it.itemCounter }.takeLast(2).map { it.itemCounter }.product()
+    fun part1(input: List<Monkey>): Long =
+        solve(input, 20) { level -> level / 3 }
+
+    fun part2(input: List<Monkey>): Long {
+        val gcd = input.map { it.test.divider }.product()
+        return solve(input, 10_000) { level -> level % gcd }
     }
 
     val name = getClassName()
     val testInput = resourceAsText(fileName = "${name}_test").trim()
     val puzzleInput = resourceAsText(name).trim()
 
-    val testMonkeys1 = testInput
-        .split("\n\n")
-        .map { Monkey.of(it.lines()) }
-    val puzzleMonkeys1 = puzzleInput
-        .split("\n\n")
-        .map { Monkey.of(it.lines()) }
-    val roundsPart1 = 20
+    val testMonkeys1 = Monkey.parse(testInput)
+    val puzzleMonkeys1 = Monkey.parse(puzzleInput)
 
-    check(part1(testMonkeys1, roundsPart1) == 10_605L)
-    val puzzleResultPart1 = part1(puzzleMonkeys1, roundsPart1)
+    check(part1(testMonkeys1) == 10_605L)
+    val puzzleResultPart1 = part1(puzzleMonkeys1)
     println(puzzleResultPart1)
     check(puzzleResultPart1 == 117_640L)
 
-    val testMonkeys2 = testInput
-        .split("\n\n")
-        .map { Monkey.of(it.lines()) }
-    val puzzleMonkeys2 = puzzleInput
-        .split("\n\n")
-        .map { Monkey.of(it.lines()) }
-    val roundsPart2 = 10_000
+    val testMonkeys2 = Monkey.parse(testInput)
+    val puzzleMonkeys2 = Monkey.parse(puzzleInput)
 
-    check(part2(testMonkeys2, roundsPart2) == 2_713_310_158L)
-    val puzzleResultPart2 = part2(puzzleMonkeys2, roundsPart2)
+    check(part2(testMonkeys2) == 2_713_310_158L)
+    val puzzleResultPart2 = part2(puzzleMonkeys2)
     println(puzzleResultPart2)
     check(puzzleResultPart2 == 30_616_425_600L)
 }
@@ -108,6 +79,10 @@ data class Monkey(
 ) {
 
     companion object {
+        fun parse(input: String): List<Monkey> =
+            input.split("\n\n")
+                .map { of(it.lines()) }
+
         fun of(rules: List<String>): Monkey {
             val inpItems = rules[1].substringAfter(": ").split(", ").map { it.toLong() }
             val inpOpLine = rules[2]
