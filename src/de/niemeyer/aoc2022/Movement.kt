@@ -115,17 +115,35 @@ data class Point2D(val x: Int, val y: Int) : Point {
 
     companion object {
         val ORIGIN = Point2D(0, 0)
+
+        fun of(input: String, delimiter: String = ","): Point2D =
+            Point2D(input.substringBefore(delimiter).toInt(), input.substringAfter(delimiter).toInt())
     }
 }
 
-fun Map<Point2D, Boolean>.print() {
+//fun Map<Point2D, Boolean>.print() {
+//    val points = keys.toList()
+//    val rows = points.maxOf { it.y }
+//    val columns = points.maxOf { it.x }
+//
+//    for (y in 0..rows) {
+//        for (x in 0..columns) {
+//            print(if (this.getOrDefault(Point2D(x, y), false)) '#' else '.')
+//        }
+//        println()
+//    }
+//}
+
+fun MutableMap<Point2D, Char>.print() {
     val points = keys.toList()
+    val left = points.minOf { it.x }
+    val top = points.minOf { it.y }
     val rows = points.maxOf { it.y }
     val columns = points.maxOf { it.x }
 
-    for (y in 0..rows) {
-        for (x in 0..columns) {
-            print(if (this.getOrDefault(Point2D(x, y), false)) '#' else '.')
+    for (y in top..rows) {
+        for (x in left..columns) {
+            print(this.getOrDefault(Point2D(x, y), '.'))
         }
         println()
     }
