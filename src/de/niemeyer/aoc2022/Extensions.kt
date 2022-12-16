@@ -65,5 +65,8 @@ infix fun IntRange.intersects(other: IntRange): Boolean =
 infix fun IntRange.intersect(other: IntRange): IntRange =
     maxOf(first, other.first)..minOf(last, other.last)
 
+infix fun IntRange.union(other: IntRange): IntRange =
+    minOf(first, other.first)..maxOf(last, other.last)
+
 fun IntRange.size(): Int =
     last - first + 1

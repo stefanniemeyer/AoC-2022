@@ -1,6 +1,8 @@
-package de.niemeyer.aoc2022/*
+/*
  * Most of the code comes from Todd Ginsberg
  */
+
+package de.niemeyer.aoc2022
 
 import kotlin.math.absoluteValue
 import kotlin.math.sign
