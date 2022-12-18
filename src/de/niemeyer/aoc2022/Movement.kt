@@ -4,6 +4,7 @@
 
 package de.niemeyer.aoc2022
 
+import java.util.*
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 import kotlin.math.max
@@ -184,6 +185,13 @@ data class Point3D(val x: Int, val y: Int, val z: Int) : Point {
         HEX_OFFSETS.map { this + it.value }
     }
 
+    infix fun sharesAxisWith(that: Point3D): Boolean =
+        x == that.x || y == that.y || z == that.z
+
+    val axisNeighbors: List<Point3D> by lazy {
+        neighbors.filter { it.sharesAxisWith(this) }
+    }
+
     operator fun plus(other: Point3D): Point3D =
         Point3D(x + other.x, y + other.y, z + other.z)
 
@@ -218,6 +226,11 @@ data class Point3D(val x: Int, val y: Int, val z: Int) : Point {
             "se" to Point3D(0, -1, 1),
             "sw" to Point3D(-1, 0, 1),
         )
+
+        fun of(input: String, delimiter: String = ","): Point3D {
+            val (x, y, z) = input.split(delimiter).map { it.toInt() }
+            return Point3D(x, y, z)
+        }
     }
 }
 
@@ -234,4 +247,90 @@ data class Point4D(val x: Int, val y: Int, val z: Int, val w: Int) : Point {
         }
     }
 }
+
+fun dijkstraDE(graph: Map<String, Map<String, Int>>, start: String, goal: String): Map<String, Int> {
+    // Entfernungen zu allen Knoten initialisieren
+    val distances = graph.keys.associate { it to Int.MAX_VALUE }.toMutableMap()
+    distances[start] = 0
+
+    // Set mit unbesuchten Knoten
+    val unvisited = distances.keys.toMutableSet()
+
+    // Vorgänger-Knoten für jeden Knoten
+    val previous = mutableMapOf<String, String>()
+
+    // Aktuellen Knoten festlegen
+    var current = start
+
+    // Solange es unbesuchte Knoten gibt...
+    while (unvisited.isNotEmpty()) {
+        // Entfernungen zu Nachbarknoten aktualisieren
+        graph[current]?.forEach { (neighbor, distance) ->
+            val newDistance = distances[current]!! + distance
+            if (newDistance < distances[neighbor]!!) {
+                distances[neighbor] = newDistance
+                previous[neighbor] = current
+            }
+        }
+
+        // Aktuellen Knoten als besucht markieren
+        unvisited.remove(current)
+
+        // Nächsten unbesuchten Knoten mit minimaler Entfernung auswählen
+        current = unvisited.minBy { distances[it]!! }!!
+    }
+
+    return distances
+}
+
+class Vertex(val name: String) {
+    val neighbors = mutableListOf<Edge>()
+
+    override fun toString() = name
+}
+
+class Edge(val neighbor: Vertex, val weight: Int)
+
+fun dijkstra(graph: Map<Vertex, List<Edge>>, source: Vertex, target: Vertex): Map<Vertex, Int> {
+    val dist = mutableMapOf<Vertex, Int>()
+    val predecessor = mutableMapOf<Vertex, Vertex?>()
+    val visited = mutableSetOf<Vertex>()
+    val queue = PriorityQueue<Pair<Vertex, Int>>(compareBy { it.second })
+
+    // Initialize distances
+    for (vertex in graph.keys) {
+        dist[vertex] = if (vertex == source) 0 else Int.MAX_VALUE
+        predecessor[vertex] = null
+    }
+
+    queue.add(source to 0)
+
+    while (queue.isNotEmpty()) {
+        val (neighbor, distance) = queue.poll()
+        if (neighbor in visited) continue
+        visited.add(neighbor)
+        for (edge in graph[neighbor]!!) {
+            val alt = distance + edge.weight
+            if (alt < dist[edge.neighbor]!!) {
+                dist[edge.neighbor] = alt
+                predecessor[edge.neighbor] = neighbor
+                queue.add(edge.neighbor to alt)
+            }
+        }
+    }
+//    printShortestPath(predecessor, source, target)
+    return dist
+}
+
+fun printShortestPath(predecessor: Map<Vertex, Vertex?>, source: Vertex, target: Vertex) {
+    val path = mutableListOf<Vertex>()
+    var u: Vertex? = target
+    while (u != null) {
+        path.add(u)
+        u = predecessor[u]
+    }
+    path.reverse()
+    println("Shortest path from $source to $target: ${path.joinToString(" -> ")}")
+}
+
 
