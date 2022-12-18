@@ -8,39 +8,71 @@ package de.niemeyer.aoc2022
 import de.niemeyer.aoc2022.Resources.resourceAsList
 
 fun main() {
-    fun part1(input: Set<Point3D>): Int {
-        var sole = 0
-        input.forEach {
-            val ad = validNeighbors(it).count { it in input }
-            sole += 6 - ad
-        }
-        return sole
-    }
-
-//    fun part2(input: Set<Point3D>): Int =
-//        TODO()
-
     val name = getClassName()
     val testInput = resourceAsList(fileName = "${name}_test").map { Point3D.of(it) }.toSet()
     val puzzleInput = resourceAsList(name).map { Point3D.of(it) }.toSet()
 
-    check(part1(testInput) == 64)
-    val puzzleResultPart1 = part1(puzzleInput)
+    check(Pond(testInput).solvePart1() == 64)
+    val puzzleResultPart1 = Pond(puzzleInput).solvePart1()
     println(puzzleResultPart1)
     check(puzzleResultPart1 == 3_498)
 
-//    check(part2(testInput) == 0)
-//    val puzzleResultPart2 = part2(puzzleInput) 
-//    println(puzzleResultPart2)
-//    check(puzzleResultPart2 == 0)
+    check(Pond(testInput).solvePart2() == 58)
+    val puzzleResultPart2 = Pond(puzzleInput).solvePart2()
+    println(puzzleResultPart2)
+    check(puzzleResultPart2 == 2_008)
 }
 
-fun validNeighbors(p: Point3D): List<Point3D> =
-    listOf(
-        Point3D(p.x - 1, p.y, p.z),
-        Point3D(p.x + 1, p.y, p.z),
-        Point3D(p.x, p.y - 1, p.z),
-        Point3D(p.x, p.y + 1, p.z),
-        Point3D(p.x, p.y, p.z - 1),
-        Point3D(p.x, p.y, p.z + 1),
-    )
+class Pond(private val lava: Set<Point3D>) {
+    private val cache = mutableMapOf<Point3D, Boolean>()
+    private val maxPoint = Point3D(lava.maxOf { it.x }, lava.maxOf { it.y }, lava.maxOf { it.z })
+    private val minPoint = Point3D(lava.minOf { it.x }, lava.minOf { it.y }, lava.minOf { it.z })
+
+    fun solvePart1(): Int =
+        lava.sumOf { validNeighbors(it).count() }
+
+    fun solvePart2(): Int =
+        lava.sumOf {
+            validNeighbors(it).count { cand -> !cand.isAir() }
+        }
+
+    private fun Point3D.isAir(): Boolean {
+        cache[this]?.let { return it }
+        val outside = ArrayDeque(listOf(this))
+        val visited = mutableSetOf<Point3D>()
+        while (!outside.isEmpty()) {
+            val p = outside.removeFirst()
+            if (p in visited) {
+                continue
+            }
+            visited.add(p)
+            if (p in cache) {
+                return addToCache(visited, cache.getValue(p))   // Point is in cache
+            } else if (p.isOutsidePod()) {
+                return addToCache(visited, isAir = false)       // Point is outside pond and cannot be air though
+            } else {
+                outside.addAll(validNeighbors(p))               // check valid neighbors
+            }
+        }
+        return addToCache(visited, isAir = true)
+    }
+
+    private fun addToCache(points: Iterable<Point3D>, isAir: Boolean): Boolean {
+        points.forEach { cache[it] = isAir }
+        return isAir
+    }
+
+    private fun Point3D.isOutsidePod(): Boolean =
+        x < minPoint.x || y < minPoint.y || z < minPoint.z || x > maxPoint.x || y > maxPoint.y || z > maxPoint.z
+
+    private fun validNeighbors(p: Point3D): List<Point3D> =
+        listOf(
+            Point3D(p.x - 1, p.y, p.z),
+            Point3D(p.x + 1, p.y, p.z),
+            Point3D(p.x, p.y - 1, p.z),
+            Point3D(p.x, p.y + 1, p.z),
+            Point3D(p.x, p.y, p.z - 1),
+            Point3D(p.x, p.y, p.z + 1),
+        ).filter { it !in lava }
+}
+

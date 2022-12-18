@@ -227,10 +227,8 @@ data class Point3D(val x: Int, val y: Int, val z: Int) : Point {
             "sw" to Point3D(-1, 0, 1),
         )
 
-        fun of(input: String, delimiter: String = ","): Point3D {
-            val (x, y, z) = input.split(delimiter).map { it.toInt() }
-            return Point3D(x, y, z)
-        }
+        fun of(input: String, delimiter: String = ","): Point3D =
+            input.split(delimiter).map { it.toInt() }.let { (x, y, z) -> Point3D(x, y, z) }
     }
 }
 
