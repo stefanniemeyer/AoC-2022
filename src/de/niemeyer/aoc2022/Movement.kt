@@ -246,41 +246,6 @@ data class Point4D(val x: Int, val y: Int, val z: Int, val w: Int) : Point {
     }
 }
 
-fun dijkstraDE(graph: Map<String, Map<String, Int>>, start: String, goal: String): Map<String, Int> {
-    // Entfernungen zu allen Knoten initialisieren
-    val distances = graph.keys.associate { it to Int.MAX_VALUE }.toMutableMap()
-    distances[start] = 0
-
-    // Set mit unbesuchten Knoten
-    val unvisited = distances.keys.toMutableSet()
-
-    // Vorgänger-Knoten für jeden Knoten
-    val previous = mutableMapOf<String, String>()
-
-    // Aktuellen Knoten festlegen
-    var current = start
-
-    // Solange es unbesuchte Knoten gibt...
-    while (unvisited.isNotEmpty()) {
-        // Entfernungen zu Nachbarknoten aktualisieren
-        graph[current]?.forEach { (neighbor, distance) ->
-            val newDistance = distances[current]!! + distance
-            if (newDistance < distances[neighbor]!!) {
-                distances[neighbor] = newDistance
-                previous[neighbor] = current
-            }
-        }
-
-        // Aktuellen Knoten als besucht markieren
-        unvisited.remove(current)
-
-        // Nächsten unbesuchten Knoten mit minimaler Entfernung auswählen
-        current = unvisited.minBy { distances[it]!! }!!
-    }
-
-    return distances
-}
-
 class Vertex(val name: String) {
     val neighbors = mutableListOf<Edge>()
 
@@ -289,7 +254,7 @@ class Vertex(val name: String) {
 
 class Edge(val neighbor: Vertex, val weight: Int)
 
-fun dijkstra(graph: Map<Vertex, List<Edge>>, source: Vertex, target: Vertex): Map<Vertex, Int> {
+fun dijkstra(graph: Map<Vertex, List<Edge>>, source: Vertex, target: Vertex? = null): Map<Vertex, Int> {
     val dist = mutableMapOf<Vertex, Int>()
     val predecessor = mutableMapOf<Vertex, Vertex?>()
     val visited = mutableSetOf<Vertex>()
