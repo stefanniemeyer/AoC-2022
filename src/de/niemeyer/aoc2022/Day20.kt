@@ -5,66 +5,82 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsListOfInt
+import de.niemeyer.aoc2022.Resources.resourceAsListOfLong
 import kotlin.math.absoluteValue
 
 fun main() {
-    fun parseInput(input: List<Int>): List<LinkedList> {
+    fun parseInput(input: List<Long>, decryptionKey: Long = 1L): List<LinkedList> {
         val result = mutableListOf<LinkedList>()
-        var firstValue = input.first()
+        var firstValue = input.first() * decryptionKey
         val head = LinkedList(firstValue)
         result.add(head)
         var tail = head
         input.drop(1).forEach { value ->
-            tail = tail.addAfter(value)
+            tail = tail.addAfter(value * decryptionKey)
             result.add(tail)
         }
         head.previous = tail
         tail.next = head
-//        head.print()
         return result.toList()
     }
 
-    fun part1(input: List<Int>): Int {
+    fun part1(input: List<Long>): Long {
         val encFile = parseInput(input)
         var zero: LinkedList? = null
+        val numNumbers = input.size
 
         encFile.forEach { current ->
-            if (current.value == 0) {
+            if (current.value == 0L) {
                 zero = current
             }
-            current.move(current.value)
-//            current.print()
+            current.move((current.value % (numNumbers - 1)).toInt())
         }
-        require (zero != null)
-        val numNumbers = input.size
+        require(zero != null)
         val e1000 = zero!![1000 % numNumbers].value
         val e2000 = zero!![2000 % numNumbers].value
         val e3000 = zero!![3000 % numNumbers].value
         return e1000 + e2000 + e3000
     }
 
-    fun part2(input: List<Int>): Int =
-        TODO()
+    fun part2(input: List<Long>): Long {
+        val encFile = parseInput(input, 811_589_153L)
+        var zero: LinkedList? = null
+        val numNumbers = input.size
+
+        repeat(10) {
+            encFile.forEach { current ->
+                if (current.value == 0L) {
+                    zero = current
+                }
+                current.move((current.value % (numNumbers - 1)).toInt())
+            }
+        }
+        require(zero != null)
+        val e1000 = zero!![1000 % numNumbers].value
+        val e2000 = zero!![2000 % numNumbers].value
+        val e3000 = zero!![3000 % numNumbers].value
+        return e1000 + e2000 + e3000
+
+    }
 
     val name = getClassName()
-    val testInput = resourceAsListOfInt(fileName = "${name}_test")
-    val puzzleInput = resourceAsListOfInt(name)
+    val testInput = resourceAsListOfLong(fileName = "${name}_test")
+    val puzzleInput = resourceAsListOfLong(name)
 
-    check(part1(testInput) == 3)
+    check(part1(testInput) == 3L)
     val puzzleResultPart1 = part1(puzzleInput)
     println(puzzleResultPart1)
-    check(puzzleResultPart1 == 1_591)
+    check(puzzleResultPart1 == 1_591L)
 
-//    check(part2(testInput) == 0)
-//    val puzzleResultPart2 = part2(puzzleInput) 
-//    println(puzzleResultPart2)
-//    check(puzzleResultPart2 == 0)
+    check(part2(testInput) == 1_623_178_306L)
+    val puzzleResultPart2 = part2(puzzleInput)
+    println(puzzleResultPart2)
+    check(puzzleResultPart2 == 14_579_387_544_492L)
 }
 
-data class LinkedList(val value: Int, var previous: LinkedList? = null, var next: LinkedList? = null)
+data class LinkedList(val value: Long, var previous: LinkedList? = null, var next: LinkedList? = null)
 
-fun LinkedList.addAfter(value: Int): LinkedList {
+fun LinkedList.addAfter(value: Long): LinkedList {
     val next = this.next
     val newNode = LinkedList(value, this, next)
     this.next = newNode
@@ -72,8 +88,8 @@ fun LinkedList.addAfter(value: Int): LinkedList {
     return newNode
 }
 
-fun LinkedList.move(pos: Int) {
-    if (pos == 0) return // nothing to do
+fun LinkedList.move(relativePos: Int) {
+    if (relativePos == 0) return // nothing to do
 
     val next = this.next
     val previous = this.previous
@@ -83,11 +99,11 @@ fun LinkedList.move(pos: Int) {
     next?.previous = previous
 
     var target = this
-    repeat(pos.absoluteValue) {
-        target = if (pos < 0) target.previous!! else target.next!!
+    repeat(relativePos.absoluteValue) {
+        target = if (relativePos < 0) target.previous!! else target.next!!
     }
 
-    if (pos > 0) {
+    if (relativePos > 0) {
         this.next = target.next
         this.previous = target
 
@@ -104,10 +120,10 @@ fun LinkedList.move(pos: Int) {
     }
 }
 
-operator fun LinkedList.get(pos: Int): LinkedList {
+operator fun LinkedList.get(relativePos: Int): LinkedList {
     var current = this
-    repeat(pos.absoluteValue) {
-        current = if (pos < 0) current.previous!! else current.next!!
+    repeat(relativePos.absoluteValue) {
+        current = if (relativePos < 0) current.previous!! else current.next!!
     }
     return current
 }
