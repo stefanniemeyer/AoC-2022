@@ -2,6 +2,8 @@
  * Most of the code comes from Todd Ginsberg
  */
 
+@file:Suppress("unused")
+
 package de.niemeyer.aoc2022
 
 import java.util.*
@@ -254,7 +256,7 @@ class Vertex(val name: String) {
 
 class Edge(val neighbor: Vertex, val weight: Int)
 
-fun dijkstra(graph: Map<Vertex, List<Edge>>, source: Vertex, target: Vertex? = null): Map<Vertex, Int> {
+fun dijkstra(graph: Map<Vertex, List<Edge>>, source: Vertex /*, target: Vertex? = null */): Map<Vertex, Int> {
     val dist = mutableMapOf<Vertex, Int>()
     val predecessor = mutableMapOf<Vertex, Vertex?>()
     val visited = mutableSetOf<Vertex>()

@@ -11,7 +11,7 @@ import kotlin.math.absoluteValue
 fun main() {
     fun parseInput(input: List<Long>, decryptionKey: Long = 1L): List<LinkedList> {
         val result = mutableListOf<LinkedList>()
-        var firstValue = input.first() * decryptionKey
+        val firstValue = input.first() * decryptionKey
         val head = LinkedList(firstValue)
         result.add(head)
         var tail = head
@@ -24,30 +24,12 @@ fun main() {
         return result.toList()
     }
 
-    fun part1(input: List<Long>): Long {
-        val encFile = parseInput(input)
+    fun solve(input: List<Long>, rounds: Int = 1, decryptionKey: Long = 1): Long {
+        val encFile = parseInput(input, decryptionKey)
         var zero: LinkedList? = null
         val numNumbers = input.size
 
-        encFile.forEach { current ->
-            if (current.value == 0L) {
-                zero = current
-            }
-            current.move((current.value % (numNumbers - 1)).toInt())
-        }
-        require(zero != null)
-        val e1000 = zero!![1000 % numNumbers].value
-        val e2000 = zero!![2000 % numNumbers].value
-        val e3000 = zero!![3000 % numNumbers].value
-        return e1000 + e2000 + e3000
-    }
-
-    fun part2(input: List<Long>): Long {
-        val encFile = parseInput(input, 811_589_153L)
-        var zero: LinkedList? = null
-        val numNumbers = input.size
-
-        repeat(10) {
+        repeat(rounds) {
             encFile.forEach { current ->
                 if (current.value == 0L) {
                     zero = current
@@ -60,8 +42,13 @@ fun main() {
         val e2000 = zero!![2000 % numNumbers].value
         val e3000 = zero!![3000 % numNumbers].value
         return e1000 + e2000 + e3000
-
     }
+
+    fun part1(input: List<Long>): Long =
+        solve(input)
+
+    fun part2(input: List<Long>): Long =
+        solve(input, 10,811_589_153L)
 
     val name = getClassName()
     val testInput = resourceAsListOfLong(fileName = "${name}_test")
@@ -108,14 +95,14 @@ fun LinkedList.move(relativePos: Int) {
         this.previous = target
 
         // relink new neighbors
-        target?.next?.previous = this
+        target.next?.previous = this
         target.next = this
     } else {
         this.next = target
         this.previous = target.previous
 
         // relink new neighbors
-        target?.previous?.next = this
+        target.previous?.next = this
         target.previous = this
     }
 }
@@ -128,6 +115,7 @@ operator fun LinkedList.get(relativePos: Int): LinkedList {
     return current
 }
 
+@Suppress("unused")
 fun LinkedList.print() {
     var current = this
     var count = 10

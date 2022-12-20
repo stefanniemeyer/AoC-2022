@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package de.niemeyer.aoc2022
 
 import java.math.BigInteger

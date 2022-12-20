@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package de.niemeyer.aoc2022
 
 fun Iterator<Char>.next(size: Int): String =
