@@ -63,7 +63,7 @@ fun main() {
         return -1
     }
 
-    fun part2(input: String): Long =
+    fun part2(input: String, maxCycles: Long = 1_000_000_000_000L): Long =
         TODO()
 
     val name = getClassName()
