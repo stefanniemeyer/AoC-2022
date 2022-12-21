@@ -49,11 +49,10 @@ fun main() {
                 newResult
             } else if (rightMonkey.isHuman()) {
                 val leftResult = leftMonkey.calc()
-                var newResult: Long
-                if (commutation) {
-                    newResult = inverseFunc(result, leftResult)
+                val newResult = if (commutation) {
+                    inverseFunc(result, leftResult)
                 } else {
-                    newResult = func(leftResult, result)
+                    func(leftResult, result)
                 }
                 newResult
             } else if (leftMonkey.containsHuman()) {
@@ -63,11 +62,10 @@ fun main() {
                 leftResult
             } else if (rightMonkey.containsHuman()) {
                 val leftResult = leftMonkey.calc()
-                val newResult: Long
-                if (commutation) {
-                    newResult = inverseFunc(result, leftResult)
+                val newResult = if (commutation) {
+                    inverseFunc(result, leftResult)
                 } else {
-                    newResult = func(leftResult, result)
+                    func(leftResult, result)
                 }
                 val rightResult = rightMonkey.restoreResult(newResult)
                 rightResult
@@ -90,11 +88,11 @@ fun main() {
         val left = params.first()
         val right = params.last()
 
-        when (params[1]) {
-            "+" -> return MonkeyCalc(monkeyName, left, right, Long::plus, Long::minus, commutation = true)
-            "-" -> return MonkeyCalc(monkeyName, left, right, Long::minus, Long::plus, commutation = false)
-            "*" -> return MonkeyCalc(monkeyName, left, right, Long::times, Long::div, commutation = true)
-            "/" -> return MonkeyCalc(monkeyName, left, right, Long::div, Long::times, commutation = false)
+        return when (params[1]) {
+            "+" -> MonkeyCalc(monkeyName, left, right, Long::plus, Long::minus, commutation = true)
+            "-" -> MonkeyCalc(monkeyName, left, right, Long::minus, Long::plus, commutation = false)
+            "*" -> MonkeyCalc(monkeyName, left, right, Long::times, Long::div, commutation = true)
+            "/" -> MonkeyCalc(monkeyName, left, right, Long::div, Long::times, commutation = false)
             else -> error("unknown operator: ${params[1]}")
         }
     }
