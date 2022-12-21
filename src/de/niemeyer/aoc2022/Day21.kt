@@ -41,7 +41,7 @@ fun main() {
         MonkeyMath(name) {
         val leftMonkey by lazy { monkeys.getValue(left) }
         val rightMonkey by lazy { monkeys.getValue(right) }
-        override fun calc(): Long = func(monkeys.getValue(left).calc(), monkeys.getValue(right).calc())
+        override fun calc(): Long = func(leftMonkey.calc(), rightMonkey.calc())
         override fun restoreResult(result: Long): Long {
             return if (leftMonkey.isHuman()) {
                 val rightResult = rightMonkey.calc()
