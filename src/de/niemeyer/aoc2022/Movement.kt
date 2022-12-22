@@ -16,6 +16,14 @@ sealed class Direction {
     abstract val turnRight: Direction
     abstract val offset: Point2D
 
+    override fun toString(): String =
+        when (this) {
+            is North -> "N"
+            is South -> "S"
+            is East -> "E"
+            is West -> "W"
+        }
+
     operator fun invoke(dir: String): Direction =
         when (dir) {
             "N", "U" -> North
@@ -126,20 +134,37 @@ data class Point2D(val x: Int, val y: Int) : Point {
     }
 }
 
-//fun Map<Point2D, Boolean>.print() {
-//    val points = keys.toList()
-//    val rows = points.maxOf { it.y }
-//    val columns = points.maxOf { it.x }
-//
-//    for (y in 0..rows) {
-//        for (x in 0..columns) {
-//            print(if (this.getOrDefault(Point2D(x, y), false)) '#' else '.')
-//        }
-//        println()
-//    }
-//}
+fun Map<Point2D, Boolean>.printExisting() {
+    val points = keys.toList()
+    val rows = points.maxOf { it.y }
+    val columns = points.maxOf { it.x }
 
-fun MutableMap<Point2D, Char>.print() {
+    for (y in 0..rows) {
+        for (x in 0..columns) {
+            if (this.containsKey(Point2D(x, y))) {
+                print(if (this.getValue(Point2D(x, y))) '#' else '.')
+            } else {
+                print(" ")
+            }
+        }
+        println()
+    }
+}
+
+fun Map<Point2D, Boolean>.printWithDefault() {
+    val points = keys.toList()
+    val rows = points.maxOf { it.y }
+    val columns = points.maxOf { it.x }
+
+    for (y in 0..rows) {
+        for (x in 0..columns) {
+            print(if (this.getOrDefault(Point2D(x, y), false)) '#' else '.')
+        }
+        println()
+    }
+}
+
+fun MutableMap<Point2D, Char>.printMut() {
     val points = keys.toList()
     val left = points.minOf { it.x }
     val top = points.minOf { it.y }
