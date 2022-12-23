@@ -6,22 +6,15 @@
 package de.niemeyer.aoc2022
 
 import de.niemeyer.aoc2022.Resources.resourceAsText
+import kotlin.math.absoluteValue
 
-typealias MonkeyMap = Map<Point2D, Boolean>
 typealias MonkeyInstructions = List<Pair<Int, Char?>>
 
 fun main() {
-    fun Direction.facingToNumber() = when (this) {
-        Direction.East -> 0
-        Direction.North -> 1
-        Direction.South -> 2
-        Direction.West -> 3
-    }
-
     fun part1(input: String): Int {
         val mmp = MonkeyMapPuzzle(input)
-        var currentPos = Point2D(mmp.colLimitsForRows.getValue(1).first, 1)
-        var currentDirection: Direction = Direction.East
+        var currentPos = GridCell(1, mmp.grid.columnRangesForRows.getValue(1).first)
+        var currentDirection: GridDirection = GridDirection.Right
         run instructionLoop@{
             mmp.instructions.forEach { (steps, direction) ->
                 run repeatBlock@{
@@ -34,61 +27,54 @@ fun main() {
                     }
                 }
                 currentDirection = when (direction?.toDirection()) {
-                    Direction.West -> currentDirection.turnRight  // L North means row+1 in the Direction class, so we switch this here
-                    Direction.East -> currentDirection.turnLeft   // R
+                    Direction.Left -> currentDirection.turnLeft
+                    Direction.Right -> currentDirection.turnRight
                     else -> return@instructionLoop
                 }
             }
         }
 
-        return 1000 * currentPos.y + 4 * currentPos.x + currentDirection.facingToNumber()
+        return 1000 * currentPos.row + 4 * currentPos.column + currentDirection.facingToNumber()
     }
 
-    fun part2(input: String): Int =
-        TODO()
+    fun part2(input: String): Int {
+        val mmp = MonkeyMapPuzzle(input)
+        var currentPos = GridCell(mmp.grid.columnRangesForRows.getValue(1).first, 1)
+        var currentDirection: Direction = Direction.Right
+
+        mmp.rearrangeCube(mmp.testCornerCells)
+
+        return -1
+    }
 
     val name = getClassName()
     val testInput = resourceAsText(fileName = "${name}_test")
     val puzzleInput = resourceAsText(name)
 
-    check(part1(testInput) == 6_032)
-    val puzzleResultPart1 = part1(puzzleInput)
-    println(puzzleResultPart1)
-    check(puzzleResultPart1 == 65_368)
+//    check(part1(testInput) == 6_032)
+//    val puzzleResultPart1 = part1(puzzleInput)
+//    println(puzzleResultPart1)
+//    check(puzzleResultPart1 == 65_368)
 
-//    check(part2(testInput) == 0)
+    check(part2(testInput) == 5_031)
 //    val puzzleResultPart2 = part2(puzzleInput) 
 //    println(puzzleResultPart2)
 //    check(puzzleResultPart2 == 0)
 }
 
 class MonkeyMapPuzzle(val input: String) {
-    var map: MonkeyMap = emptyMap()
+    var grid: Grid
     var instructions: MonkeyInstructions = emptyList()
-    var colLimitsForRows: Map<Int, IntRange> = emptyMap()
-    var rowLimitsForCols: Map<Int, IntRange> = emptyMap()
 
     init {
-        val parsedInput = parse(input)
-        map = parsedInput.first
-        instructions = parsedInput.second
-        colLimitsForRows = getColRangesForRows(map)
-        rowLimitsForCols = getRowRangesForCols(map)
+        val parts = input.split("\n\n")
+        val gridInput = parts.first().lines().filter { it.isNotBlank() }
+        grid  = Grid.of(gridInput, offset = GridCell(1, 1))
+        instructions = parseInstructions(parts.last())
     }
 
-    fun parseMap(input: List<String>): MonkeyMap =
-        input.mapIndexed { row, line ->
-            line.mapIndexedNotNull { column, c ->
-                if (c == '.' || c == '#') {
-                    Point2D(column + 1, row + 1) to (c == '#')
-                } else {
-                    null
-                }
-            }
-        }.flatten().toMap()
-
     fun parseInstructions(input: String): MonkeyInstructions {
-        var newInput = input.replace("R", " R ")
+        var newInput = input.replace("R", " R ").trim()
         newInput = newInput.replace("L", " L ")
         val instructions = newInput.split(" ").chunked(size = 2).map { moves ->
             val value = moves.first().toInt()
@@ -101,50 +87,57 @@ class MonkeyMapPuzzle(val input: String) {
         return instructions
     }
 
-    fun parse(input: String): Pair<MonkeyMap, MonkeyInstructions> {
-        val parts = input.split("\n\n")
-        val mapInput = parts.first().lines().filter { it.isNotBlank() }
-        val monkeyMap = parseMap(mapInput)
-        val instructions = parts.last().trim()
-        val parsedInstructions = parseInstructions(instructions)
-//        monkeyMap.printExisting()
-        return monkeyMap to parsedInstructions
-    }
+    fun cycleMove(cell: GridCell, gridDirection: GridDirection): GridCell {
+        val newCell = cell.move(gridDirection)
 
-    fun getColRangesForRows(monkeyMap: MonkeyMap): Map<Int, IntRange> {
-        val rowRange = monkeyMap.keys.minOf { it.y }..monkeyMap.keys.maxOf { it.y }
-        return rowRange.associateWith { row ->
-            monkeyMap.keys.filter { it.y == row }.minOf { it.x }..monkeyMap.keys.filter { it.y == row }.maxOf { it.x }
-        }
-    }
-
-    fun getRowRangesForCols(monkeyMap: MonkeyMap): Map<Int, IntRange> {
-        val colRange = monkeyMap.keys.minOf { it.x }..monkeyMap.keys.maxOf { it.x }
-        return colRange.associateWith { col ->
-            monkeyMap.keys.filter { it.x == col }.minOf { it.y }..monkeyMap.keys.filter { it.x == col }.maxOf { it.y }
-        }
-    }
-
-    fun cycleMove(p: Point2D, d: Direction): Point2D {
-        val newPoint = p.move(d)
-
-        val rowLimits = rowLimitsForCols.getValue(p.x)
-        val colLimits = colLimitsForRows.getValue(p.y)
+        val rowLimits = grid.rowRangesForColumns.getValue(cell.column)
+        val colLimits = grid.columnRangesForRows.getValue(cell.row)
 
         val newRow = when {
-            newPoint.y > rowLimits.last -> rowLimits.first
-            newPoint.y < rowLimits.first -> rowLimits.last
-            else -> newPoint.y
+            newCell.row > rowLimits.last -> rowLimits.first
+            newCell.row < rowLimits.first -> rowLimits.last
+            else -> newCell.row
         }
         val newCol = when {
-            newPoint.x > colLimits.last -> colLimits.first
-            newPoint.x < colLimits.first -> colLimits.last
-            else -> newPoint.x
+            newCell.column > colLimits.last -> colLimits.first
+            newCell.column < colLimits.first -> colLimits.last
+            else -> newCell.column
         }
 
-        return Point2D(newCol, newRow)
+        return GridCell(newRow, newCol)
     }
 
-    fun isWall(p: Point2D): Boolean =
-        map.getValue(p) == true
+    fun isWall(p: GridCell): Boolean =
+        grid.gridMap.getValue(p).value
+
+    val testCornerCells = listOf(
+        GridCell(5, 1),
+        GridCell(5, 5),
+        GridCell(5, 9),
+        GridCell(9, 13),
+        GridCell(1, 9),
+        GridCell(9, 9)
+    )
+
+    fun rearrangeCube(cornerCells: List<GridCell>) {
+        val edgeLength = (cornerCells.first().column - cornerCells.first().row).absoluteValue
+        println("Edge length: $edgeLength")
+
+        val result = cornerCells.map { corner ->
+            (0 until edgeLength).flatMap { row ->
+                (0 until edgeLength).map { col ->
+                    val p = GridCell(corner.column + col, corner.row + row)
+                    GridCell(col, row) to grid.gridMap.getValue(p)
+                }
+            }.toMap()
+        }
+        println(result)
+    }
+}
+
+fun GridDirection.facingToNumber() = when (this) {
+    GridDirection.Right -> 0
+    GridDirection.Up -> 1
+    GridDirection.Down -> 2
+    GridDirection.Left -> 3
 }

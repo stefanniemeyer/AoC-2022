@@ -11,65 +11,6 @@ import kotlin.math.absoluteValue
 import kotlin.math.sign
 import kotlin.math.max
 
-sealed class Direction {
-    abstract val turnLeft: Direction
-    abstract val turnRight: Direction
-    abstract val offset: Point2D
-
-    override fun toString(): String =
-        when (this) {
-            is North -> "N"
-            is South -> "S"
-            is East -> "E"
-            is West -> "W"
-        }
-
-    operator fun invoke(dir: String): Direction =
-        when (dir) {
-            "N", "U" -> North
-            "S", "D" -> South
-            "E", "R" -> East
-            "W", "L" -> West
-            "forward" -> East
-            "up" -> North
-            "down" -> South
-            else -> throw IllegalArgumentException("No such direction $dir")
-        }
-
-    object North : Direction() {
-        override val turnLeft = West
-        override val turnRight = East
-        override val offset = Point2D(0, 1)
-    }
-
-    object South : Direction() {
-        override val turnLeft = East
-        override val turnRight = West
-        override val offset = Point2D(0, -1)
-    }
-
-    object West : Direction() {
-        override val turnLeft = South
-        override val turnRight = North
-        override val offset = Point2D(-1, 0)
-    }
-
-    object East : Direction() {
-        override val turnLeft = North
-        override val turnRight = South
-        override val offset = Point2D(1, 0)
-    }
-}
-
-fun Char.toDirection(): Direction =
-    when (this) {
-        in listOf('N', 'U') -> Direction.North
-        in listOf('S', 'D') -> Direction.South
-        in listOf('W', 'L') -> Direction.West
-        in listOf('E', 'R') -> Direction.East
-        else -> throw IllegalArgumentException("No such direction $this")
-    }
-
 data class Point2D(val x: Int, val y: Int) : Point {
     override val neighbors: List<Point2D> by lazy {
         (x - 1..x + 1).flatMap { dx ->
@@ -83,22 +24,51 @@ data class Point2D(val x: Int, val y: Int) : Point {
         neighbors.filter { it.sharesAxisWith(this) }
     }
 
+    infix fun sharesAxisWith(that: Point2D): Boolean =
+        x == that.x || y == that.y
+
     operator fun plus(other: Point2D): Point2D =
         Point2D(x + other.x, y + other.y)
 
     operator fun times(by: Int): Point2D =
         Point2D(x * by, y * by)
 
+    fun move(compassDirection: CompassDirection): Point2D =
+        this.moveTimes(compassDirection, 1)
+
     fun move(direction: Direction): Point2D =
         this.moveTimes(direction, 1)
 
+    fun moveTimes(compassDirection: CompassDirection, offset: Int): Point2D =
+        when (compassDirection) {
+            CompassDirection.North -> Point2D(x, y + offset)
+            CompassDirection.East -> Point2D(x + offset, y)
+            CompassDirection.South -> Point2D(x, y - offset)
+            CompassDirection.West -> Point2D(x - offset, y)
+        }
+
     fun moveTimes(direction: Direction, offset: Int): Point2D =
         when (direction) {
-            Direction.North -> Point2D(x, y + offset)
-            Direction.South -> Point2D(x, y - offset)
-            Direction.East -> Point2D(x + offset, y)
-            Direction.West -> Point2D(x - offset, y)
+            Direction.Up -> Point2D(x, y + offset)
+            Direction.Right -> Point2D(x + offset, y)
+            Direction.Down -> Point2D(x, y - offset)
+            Direction.Left -> Point2D(x - offset, y)
         }
+
+    fun rotateLeft(): Point2D =
+        Point2D(x = y * -1, y = x)
+
+    fun rotateRight(): Point2D =
+        Point2D(x = y, y = x * -1)
+
+    infix fun lineTo(other: Point2D): List<Point2D> {
+        val xDelta = (other.x - x).sign
+        val yDelta = (other.y - y).sign
+        val steps = maxOf((x - other.x).absoluteValue, (y - other.y).absoluteValue)
+        return (1..steps).scan(this) { last, _ ->
+            Point2D(last.x + xDelta, last.y + yDelta)
+        }
+    }
 
     // calculate Manhattan distance between two points
     // https://de.wikipedia.org/wiki/Manhattan-Metrik
@@ -110,21 +80,7 @@ data class Point2D(val x: Int, val y: Int) : Point {
     infix fun chebyshevDistanceTo(other: Point2D): Int =
         max((x - other.x).absoluteValue, (y - other.y).absoluteValue)
 
-    fun rotateLeft(): Point2D =
-        Point2D(x = y * -1, y = x)
-
-    fun rotateRight(): Point2D =
-        Point2D(x = y, y = x * -1)
-
-    infix fun sharesAxisWith(that: Point2D): Boolean =
-        x == that.x || y == that.y
-
-    infix fun lineTo(that: Point2D): List<Point2D> {
-        val xDelta = (that.x - x).sign
-        val yDelta = (that.y - y).sign
-        val steps = maxOf((x - that.x).absoluteValue, (y - that.y).absoluteValue)
-        return (1..steps).scan(this) { last, _ -> Point2D(last.x + xDelta, last.y + yDelta) }
-    }
+    override fun toString(): String = "(x=$x, y=$y)"
 
     companion object {
         val ORIGIN = Point2D(0, 0)
@@ -151,29 +107,14 @@ fun Map<Point2D, Boolean>.printExisting() {
     }
 }
 
-fun Map<Point2D, Boolean>.printWithDefault() {
+fun Map<Point2D, Boolean>.printWithDefault(default: Boolean = false) {
     val points = keys.toList()
     val rows = points.maxOf { it.y }
     val columns = points.maxOf { it.x }
 
     for (y in 0..rows) {
         for (x in 0..columns) {
-            print(if (this.getOrDefault(Point2D(x, y), false)) '#' else '.')
-        }
-        println()
-    }
-}
-
-fun MutableMap<Point2D, Char>.printMut() {
-    val points = keys.toList()
-    val left = points.minOf { it.x }
-    val top = points.minOf { it.y }
-    val rows = points.maxOf { it.y }
-    val columns = points.maxOf { it.x }
-
-    for (y in top..rows) {
-        for (x in left..columns) {
-            print(this.getOrDefault(Point2D(x, y), '.'))
+            print(if (this.getOrDefault(Point2D(x, y), default)) '#' else '.')
         }
         println()
     }
@@ -272,55 +213,3 @@ data class Point4D(val x: Int, val y: Int, val z: Int, val w: Int) : Point {
         }
     }
 }
-
-class Vertex(val name: String) {
-    val neighbors = mutableListOf<Edge>()
-
-    override fun toString() = name
-}
-
-class Edge(val neighbor: Vertex, val weight: Int)
-
-fun dijkstra(graph: Map<Vertex, List<Edge>>, source: Vertex /*, target: Vertex? = null */): Map<Vertex, Int> {
-    val dist = mutableMapOf<Vertex, Int>()
-    val predecessor = mutableMapOf<Vertex, Vertex?>()
-    val visited = mutableSetOf<Vertex>()
-    val queue = PriorityQueue<Pair<Vertex, Int>>(compareBy { it.second })
-
-    // Initialize distances
-    for (vertex in graph.keys) {
-        dist[vertex] = if (vertex == source) 0 else Int.MAX_VALUE
-        predecessor[vertex] = null
-    }
-
-    queue.add(source to 0)
-
-    while (queue.isNotEmpty()) {
-        val (neighbor, distance) = queue.poll()
-        if (neighbor in visited) continue
-        visited.add(neighbor)
-        for (edge in graph[neighbor]!!) {
-            val alt = distance + edge.weight
-            if (alt < dist[edge.neighbor]!!) {
-                dist[edge.neighbor] = alt
-                predecessor[edge.neighbor] = neighbor
-                queue.add(edge.neighbor to alt)
-            }
-        }
-    }
-//    printShortestPath(predecessor, source, target)
-    return dist
-}
-
-fun printShortestPath(predecessor: Map<Vertex, Vertex?>, source: Vertex, target: Vertex) {
-    val path = mutableListOf<Vertex>()
-    var u: Vertex? = target
-    while (u != null) {
-        path.add(u)
-        u = predecessor[u]
-    }
-    path.reverse()
-    println("Shortest path from $source to $target: ${path.joinToString(" -> ")}")
-}
-
-
