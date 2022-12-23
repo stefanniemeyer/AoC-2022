@@ -20,5 +20,5 @@ fun getClassName(): String {
         .last()
         .removeSuffix("Kt")
 
-    return "resources/${className}"
+    return "main/resources/${className}"
 }

@@ -33,18 +33,18 @@ data class Point2D(val x: Int, val y: Int) : Point {
     operator fun times(by: Int): Point2D =
         Point2D(x * by, y * by)
 
-    fun move(compassDirection: CompassDirection): Point2D =
+    fun move(compassDirection: de.niemeyer.aoc2022.CompassDirection): Point2D =
         this.moveTimes(compassDirection, 1)
 
     fun move(direction: Direction): Point2D =
         this.moveTimes(direction, 1)
 
-    fun moveTimes(compassDirection: CompassDirection, offset: Int): Point2D =
+    fun moveTimes(compassDirection: de.niemeyer.aoc2022.CompassDirection, offset: Int): Point2D =
         when (compassDirection) {
-            CompassDirection.North -> Point2D(x, y + offset)
-            CompassDirection.East -> Point2D(x + offset, y)
-            CompassDirection.South -> Point2D(x, y - offset)
-            CompassDirection.West -> Point2D(x - offset, y)
+            de.niemeyer.aoc2022.CompassDirection.North -> Point2D(x, y + offset)
+            de.niemeyer.aoc2022.CompassDirection.East -> Point2D(x + offset, y)
+            de.niemeyer.aoc2022.CompassDirection.South -> Point2D(x, y - offset)
+            de.niemeyer.aoc2022.CompassDirection.West -> Point2D(x - offset, y)
         }
 
     fun moveTimes(direction: Direction, offset: Int): Point2D =
