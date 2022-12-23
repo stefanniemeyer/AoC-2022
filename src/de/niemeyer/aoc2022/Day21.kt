@@ -36,7 +36,7 @@ fun main() {
         val right: String,
         val func: (a: Long, b: Long) -> Long,
         val inverseFunc: (a: Long, b: Long) -> Long,
-        val commutation: Boolean
+        val associative: Boolean
     ) :
         MonkeyMath(name) {
         val leftMonkey by lazy { monkeys.getValue(left) }
@@ -49,7 +49,7 @@ fun main() {
                 newResult
             } else if (rightMonkey.isHuman()) {
                 val leftResult = leftMonkey.calc()
-                val newResult = if (commutation) {
+                val newResult = if (associative) {
                     inverseFunc(result, leftResult)
                 } else {
                     func(leftResult, result)
@@ -62,7 +62,7 @@ fun main() {
                 leftResult
             } else if (rightMonkey.containsHuman()) {
                 val leftResult = leftMonkey.calc()
-                val newResult = if (commutation) {
+                val newResult = if (associative) {
                     inverseFunc(result, leftResult)
                 } else {
                     func(leftResult, result)
@@ -89,10 +89,10 @@ fun main() {
         val right = params.last()
 
         return when (params[1]) {
-            "+" -> MonkeyCalc(monkeyName, left, right, Long::plus, Long::minus, commutation = true)
-            "-" -> MonkeyCalc(monkeyName, left, right, Long::minus, Long::plus, commutation = false)
-            "*" -> MonkeyCalc(monkeyName, left, right, Long::times, Long::div, commutation = true)
-            "/" -> MonkeyCalc(monkeyName, left, right, Long::div, Long::times, commutation = false)
+            "+" -> MonkeyCalc(monkeyName, left, right, Long::plus, Long::minus, associative = true)
+            "-" -> MonkeyCalc(monkeyName, left, right, Long::minus, Long::plus, associative = false)
+            "*" -> MonkeyCalc(monkeyName, left, right, Long::times, Long::div, associative = true)
+            "/" -> MonkeyCalc(monkeyName, left, right, Long::div, Long::times, associative = false)
             else -> error("unknown operator: ${params[1]}")
         }
     }
