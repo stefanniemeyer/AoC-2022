@@ -40,7 +40,7 @@ fun <T> Collection<T>.pairs(): List<Pair<T, T>> =
         this.drop(index).map { b -> a to b }
     }
 
-fun Array<CharArray>.print() {
+fun Array<CharArray>.printBottomLeft() {
     for (row in this.indices) {
         for (col in this.first().indices) {
             print(this[row][col])

@@ -51,19 +51,19 @@ fun main() {
     val testInput = resourceAsText(fileName = "${name}_test")
     val puzzleInput = resourceAsText(name)
 
-//    check(part1(testInput) == 6_032)
-//    val puzzleResultPart1 = part1(puzzleInput)
-//    println(puzzleResultPart1)
-//    check(puzzleResultPart1 == 65_368)
+    check(part1(testInput) == 6_032)
+    val puzzleResultPart1 = part1(puzzleInput)
+    println(puzzleResultPart1)
+    check(puzzleResultPart1 == 65_368)
 
     check(part2(testInput) == 5_031)
-//    val puzzleResultPart2 = part2(puzzleInput) 
-//    println(puzzleResultPart2)
-//    check(puzzleResultPart2 == 0)
+    val puzzleResultPart2 = part2(puzzleInput)
+    println(puzzleResultPart2)
+    check(puzzleResultPart2 == 0)
 }
 
 class MonkeyMapPuzzle(val input: String) {
-    var grid: Grid
+    var grid =  Grid(mapOf())
     var instructions: MonkeyInstructions = emptyList()
 
     init {

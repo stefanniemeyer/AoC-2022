@@ -116,7 +116,7 @@ operator fun LinkedList.get(relativePos: Int): LinkedList {
 }
 
 @Suppress("unused")
-fun LinkedList.print() {
+fun LinkedList.printBottomLeft() {
     var current = this
     var count = 10
     do {

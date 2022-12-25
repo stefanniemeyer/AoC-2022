@@ -68,7 +68,7 @@ class Grid(var gridMap: Map<GridCell, GridCellContainer>) {
         for (row in 0..rows) {
             for (column in 0..columns) {
                 print(
-                    if (this.gridMap.getOrDefault(
+                    if (gridMap.getOrDefault(
                             GridCell(row, column),
                             GridCellContainer(default)
                         ).value
@@ -80,8 +80,8 @@ class Grid(var gridMap: Map<GridCell, GridCellContainer>) {
     }
 
     fun rotate(instructions: TileInstructions) {
-        var rowProg = IntProgression.fromClosedRange(rowMin, rowMax, 1)
-        var columnProg = IntProgression.fromClosedRange(columnMin, columnMax, 1)
+        val rowProg = IntProgression.fromClosedRange(rowMin, rowMax, 1)
+        val columnProg = IntProgression.fromClosedRange(columnMin, columnMax, 1)
 
         val result = mutableMapOf<GridCell, GridCellContainer>()
         println("rotate: ${instructions.rotate}")
@@ -171,7 +171,7 @@ class Grid(var gridMap: Map<GridCell, GridCellContainer>) {
     }
 }
 
-fun Set<GridCell>.print() {
+fun Set<GridCell>.printBottomLeft() {
     val rowMin = this.minOf { it.row }
     val rowMax = this.maxOf { it.row }
     val columnMin = this.minOf { it.column }
@@ -179,7 +179,7 @@ fun Set<GridCell>.print() {
 
     for (row in rowMin..rowMax) {
         for (column in columnMin..columnMax) {
-            print(if (this.contains(GridCell(row, column))) '#' else '.')
+            print(if (contains(GridCell(row, column))) '#' else '.')
         }
         println()
     }

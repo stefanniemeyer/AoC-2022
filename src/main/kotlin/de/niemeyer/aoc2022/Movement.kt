@@ -1,7 +1,3 @@
-/*
- * Most of the code comes from Todd Ginsberg
- */
-
 @file:Suppress("unused")
 
 package de.niemeyer.aoc2022
@@ -24,42 +20,25 @@ data class Point2D(val x: Int, val y: Int) : Point {
         neighbors.filter { it.sharesAxisWith(this) }
     }
 
-    infix fun sharesAxisWith(that: Point2D): Boolean =
-        x == that.x || y == that.y
+    infix fun sharesAxisWith(that: Point2D): Boolean = x == that.x || y == that.y
 
-    operator fun plus(other: Point2D): Point2D =
-        Point2D(x + other.x, y + other.y)
+    operator fun plus(other: Point2D): Point2D = Point2D(x + other.x, y + other.y)
 
-    operator fun times(by: Int): Point2D =
-        Point2D(x * by, y * by)
+    operator fun times(by: Int): Point2D = Point2D(x * by, y * by)
 
-    fun move(compassDirection: de.niemeyer.aoc2022.CompassDirection): Point2D =
-        this.moveTimes(compassDirection, 1)
+    fun move(compassDirection: CompassDirection): Point2D = this.moveTimes(compassDirection, 1)
 
-    fun move(direction: Direction): Point2D =
-        this.moveTimes(direction, 1)
+    fun move(direction: Direction): Point2D = this.moveTimes(direction, 1)
 
-    fun moveTimes(compassDirection: de.niemeyer.aoc2022.CompassDirection, offset: Int): Point2D =
-        when (compassDirection) {
-            de.niemeyer.aoc2022.CompassDirection.North -> Point2D(x, y + offset)
-            de.niemeyer.aoc2022.CompassDirection.East -> Point2D(x + offset, y)
-            de.niemeyer.aoc2022.CompassDirection.South -> Point2D(x, y - offset)
-            de.niemeyer.aoc2022.CompassDirection.West -> Point2D(x - offset, y)
-        }
+    fun moveTimes(compassDirection: CompassDirection, offset: Int): Point2D =
+        this + compassDirection.offset * offset
 
     fun moveTimes(direction: Direction, offset: Int): Point2D =
-        when (direction) {
-            Direction.Up -> Point2D(x, y + offset)
-            Direction.Right -> Point2D(x + offset, y)
-            Direction.Down -> Point2D(x, y - offset)
-            Direction.Left -> Point2D(x - offset, y)
-        }
+        this + direction.offset * offset
 
-    fun rotateLeft(): Point2D =
-        Point2D(x = y * -1, y = x)
+    fun rotateLeft(): Point2D = Point2D(x = y * -1, y = x)
 
-    fun rotateRight(): Point2D =
-        Point2D(x = y, y = x * -1)
+    fun rotateRight(): Point2D = Point2D(x = y, y = x * -1)
 
     infix fun lineTo(other: Point2D): List<Point2D> {
         val xDelta = (other.x - x).sign
@@ -72,13 +51,11 @@ data class Point2D(val x: Int, val y: Int) : Point {
 
     // calculate Manhattan distance between two points
     // https://de.wikipedia.org/wiki/Manhattan-Metrik
-    infix fun manhattanDistanceTo(other: Point2D): Int =
-        (x - other.x).absoluteValue + (y - other.y).absoluteValue
+    infix fun manhattanDistanceTo(other: Point2D): Int = (x - other.x).absoluteValue + (y - other.y).absoluteValue
 
     // calculate Chebyshev's chessboard distance
     // https://en.wikipedia.org/wiki/Chebyshev_distance
-    infix fun chebyshevDistanceTo(other: Point2D): Int =
-        max((x - other.x).absoluteValue, (y - other.y).absoluteValue)
+    infix fun chebyshevDistanceTo(other: Point2D): Int = max((x - other.x).absoluteValue, (y - other.y).absoluteValue)
 
     override fun toString(): String = "(x=$x, y=$y)"
 
@@ -90,6 +67,67 @@ data class Point2D(val x: Int, val y: Int) : Point {
     }
 }
 
+fun parsePoint2dMapTopLeft(input: String): Map<Point2D, Boolean> =
+    parsePoint2dMapTopLeft(input.lines())
+
+fun parsePoint2dMapTopLeft(input: List<String>): Map<Point2D, Boolean> {
+    val rowProg = 0 until input.size step 1
+    return parsePoint2dMap(input, rowProg)
+}
+
+fun parsePoint2dMapBottomLeft(input: String): Map<Point2D, Boolean> =
+    parsePoint2dMapBottomLeft(input.lines())
+
+fun parsePoint2dMapBottomLeft(input: List<String>): Map<Point2D, Boolean> {
+    val rowProg = (input.size - 1) downTo 0
+    return parsePoint2dMap(input, rowProg)
+}
+
+fun parsePoint2dMap(input: List<String>, rowProg: IntProgression): Map<Point2D, Boolean> =
+    buildMap {
+        rowProg.forEach { y ->
+            input[y].forEachIndexed { x, c ->
+                if (c == '#' || c == '.') {
+                    put(Point2D(x, y), c == '#')
+                } else {
+                    error("unexpected char '$c'")
+                }
+            }
+        }
+    }
+
+fun parsePoint2dSetTopLeft(input: String): Set<Point2D> =
+    parsePoint2dSetTopLeft(input.lines())
+
+fun parsePoint2dSetTopLeft(input: List<String>): Set<Point2D> {
+    val rowProg = 0 until input.size step 1
+
+    return parsePoint2dSet(input, rowProg)
+}
+
+fun parsePoint2dSetBottomLeft(input: String): Set<Point2D> =
+    parsePoint2dSetBottomLeft(input.lines())
+
+fun parsePoint2dSetBottomLeft(input: List<String>): Set<Point2D> {
+    val rowProg = (input.size - 1) downTo 0
+    return parsePoint2dSet(input, rowProg)
+}
+
+fun parsePoint2dSet(input: List<String>, rowProg: IntProgression, relevantChar: Char = '#'): Set<Point2D> =
+    buildSet {
+        rowProg.forEachIndexed { y, lineIdx ->
+            input[lineIdx].mapIndexedNotNull { x, c ->
+                if (c == relevantChar) add(Point2D(x, y))
+            }
+        }
+    }
+
+fun Map<Point2D, Boolean>.printTopLeft() =
+    this.keys.toSet().printWithOrientation(orientationTopLeft = true)
+
+fun Map<Point2D, Boolean>.printBottomLeft() =
+    this.keys.printWithOrientation(orientationTopLeft = false)
+
 fun Map<Point2D, Boolean>.printExisting() {
     val points = keys.toList()
     val rows = points.maxOf { it.y }
@@ -98,7 +136,7 @@ fun Map<Point2D, Boolean>.printExisting() {
     for (y in 0..rows) {
         for (x in 0..columns) {
             if (this.containsKey(Point2D(x, y))) {
-                print(if (this.getValue(Point2D(x, y))) '#' else '.')
+                print(if (getValue(Point2D(x, y))) '#' else '.')
             } else {
                 print(" ")
             }
@@ -107,28 +145,32 @@ fun Map<Point2D, Boolean>.printExisting() {
     }
 }
 
-fun Map<Point2D, Boolean>.printWithDefault(default: Boolean = false) {
-    val points = keys.toList()
-    val rows = points.maxOf { it.y }
-    val columns = points.maxOf { it.x }
+fun Set<Point2D>.printTopLeft() =
+    printWithOrientation(orientationTopLeft = true)
 
-    for (y in 0..rows) {
-        for (x in 0..columns) {
-            print(if (this.getOrDefault(Point2D(x, y), default)) '#' else '.')
-        }
-        println()
-    }
-}
+fun Set<Point2D>.printBottomLeft() =
+    printWithOrientation(orientationTopLeft = false)
 
-fun Set<Point2D>.print() {
-    val xMin = this.minOf { it.x }
-    val xMax = this.maxOf { it.x }
+fun Set<Point2D>.printWithOrientation(orientationTopLeft: Boolean = true) {
     val yMin = this.minOf { it.y }
     val yMax = this.maxOf { it.y }
 
-    for (y in yMin..yMax) {
+    val yProg: IntProgression
+    if (orientationTopLeft == true) {
+        yProg = yMin..yMax
+    } else {
+        yProg = yMax downTo yMin
+    }
+    print(yProg)
+}
+
+fun Set<Point2D>.print(yProg: IntProgression) {
+    val xMin = this.minOf { it.x }
+    val xMax = this.maxOf { it.x }
+
+    yProg.forEach { y ->
         for (x in xMin..xMax) {
-            print(if (this.contains(Point2D(x, y))) '#' else '.')
+            print(if (contains(Point2D(x, y))) '#' else '.')
         }
         println()
     }
@@ -153,18 +195,15 @@ data class Point3D(val x: Int, val y: Int, val z: Int) : Point {
         HEX_OFFSETS.map { this + it.value }
     }
 
-    infix fun sharesAxisWith(that: Point3D): Boolean =
-        x == that.x || y == that.y || z == that.z
+    infix fun sharesAxisWith(that: Point3D): Boolean = x == that.x || y == that.y || z == that.z
 
     val axisNeighbors: List<Point3D> by lazy {
         neighbors.filter { it.sharesAxisWith(this) }
     }
 
-    operator fun plus(other: Point3D): Point3D =
-        Point3D(x + other.x, y + other.y, z + other.z)
+    operator fun plus(other: Point3D): Point3D = Point3D(x + other.x, y + other.y, z + other.z)
 
-    operator fun minus(other: Point3D): Point3D =
-        Point3D(x - other.x, y - other.y, z - other.z)
+    operator fun minus(other: Point3D): Point3D = Point3D(x - other.x, y - other.y, z - other.z)
 
     fun rotate(d: Int): Point3D {
         val c0 = d % 3
@@ -180,9 +219,8 @@ data class Point3D(val x: Int, val y: Int, val z: Int) : Point {
     infix fun distanceTo(other: Point3D): Int =
         (this.x - other.x).absoluteValue + (this.y - other.y).absoluteValue + (this.z - other.z).absoluteValue
 
-    fun hexNeighbor(dir: String): Point3D =
-        if (dir in HEX_OFFSETS) HEX_OFFSETS.getValue(dir) + this
-        else throw IllegalArgumentException("No dir: $dir")
+    fun hexNeighbor(dir: String): Point3D = if (dir in HEX_OFFSETS) HEX_OFFSETS.getValue(dir) + this
+    else throw IllegalArgumentException("No dir: $dir")
 
     companion object {
         val ORIGIN = Point3D(0, 0, 0)
