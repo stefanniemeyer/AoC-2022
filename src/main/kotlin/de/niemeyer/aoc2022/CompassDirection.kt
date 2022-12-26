@@ -91,7 +91,7 @@ sealed class CompassDirection {
 
     companion object {
         fun fromDegree(degree: Int): CompassDirection =
-            when (Math.floorMod(360, degree)) {
+            when (Math.floorMod(degree, 360)) {
                 0 -> North
                 45 -> NorthEast
                 90 -> East

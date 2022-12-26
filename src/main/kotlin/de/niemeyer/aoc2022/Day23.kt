@@ -8,23 +8,29 @@ package de.niemeyer.aoc2022
 import de.niemeyer.aoc2022.Resources.resourceAsList
 
 fun main() {
-    val directionsOrg = listOf(
-        CompassDirection.North to listOf(
-            CompassDirection.NorthWest, CompassDirection.North, CompassDirection.NorthEast
-        ),
-        CompassDirection.South to listOf(
-            CompassDirection.SouthEast, CompassDirection.South, CompassDirection.SouthWest
-        ),
-        CompassDirection.West to listOf(
-            CompassDirection.NorthWest, CompassDirection.West, CompassDirection.SouthWest
-        ),
-        CompassDirection.East to listOf(
-            CompassDirection.NorthEast, CompassDirection.East, CompassDirection.SouthEast
-        )
-    )
+    val name = getClassName()
+    val testInput = resourceAsList(fileName = "${name}_test")
+    val puzzleInput = resourceAsList(name)
 
-    val directions = ArrayDeque<Pair<CompassDirection, List<CompassDirection>>>()
-    var elfes: MutableSet<Point2D> = mutableSetOf()
+    check(Day23(testInput).part1() == 110)
+    val puzzleResultPart1 = Day23(puzzleInput).part1()
+    println(puzzleResultPart1)
+    check(puzzleResultPart1 == 3_917)
+
+    check(Day23(testInput).part2() == 20)
+    val puzzleResultPart2 = Day23(puzzleInput).part2()
+    println(puzzleResultPart2)
+    check(puzzleResultPart2 == 988)
+}
+
+class Day23(val input: List<String>) {
+    var elfes = parsePoint2dSetBottomLeft(input).toMutableSet()
+    val directions = ArrayDeque<CompassDirection>().apply {
+        add(CompassDirection.North)
+        add(CompassDirection.South)
+        add(CompassDirection.West)
+        add(CompassDirection.East)
+    }
 
     fun round(): Boolean {
         val newElfes = mutableSetOf<Point2D>()
@@ -33,11 +39,11 @@ fun main() {
             if (elf.neighbors.count { it in elfes } == 0) {
                 proposes.getOrPut(elf) { mutableListOf() }.add(elf) // elf has no neighbors, so it does not move
             } else {
-                val candidate = directions.firstOrNull {
-                    it.second.none { testDir ->
-                        elf.move(testDir) in elfes
+                val candidate = directions.firstOrNull { direction ->
+                    listOf(-45, 0, 45).none { testDir ->
+                        elf.move(CompassDirection.fromDegree(direction.degree + testDir)) in elfes
                     }
-                }?.let { elf.move(it.first) } ?: elf
+                }?.let { elf.move(it) } ?: elf
                 proposes.getOrPut(candidate) { mutableListOf() }.add(elf)
             }
         }
@@ -61,10 +67,7 @@ fun main() {
         return changes
     }
 
-    fun part1(input: Set<Point2D>): Int {
-        elfes = input.toMutableSet()
-        directions.clear()
-        directions.addAll(directionsOrg)
+    fun part1(): Int {
         repeat(10) {
             round()
         }
@@ -76,25 +79,6 @@ fun main() {
         return emptyFields
     }
 
-    fun part2(input: Set<Point2D>): Int {
-        directions.clear()
-        directions.addAll(directionsOrg)
-        elfes = input.toMutableSet()
-
-        return generateSequence(true) { round() }.takeWhile { it }.count()
-    }
-
-    val name = getClassName()
-    val testInput = parsePoint2dSetBottomLeft(resourceAsList(fileName = "${name}_test"))
-    val puzzleInput = parsePoint2dSetBottomLeft(resourceAsList(name))
-
-    check(part1(testInput) == 110)
-    val puzzleResultPart1 = part1(puzzleInput)
-    println(puzzleResultPart1)
-    check(puzzleResultPart1 == 3_917)
-
-    check(part2(testInput) == 20)
-    val puzzleResultPart2 = part2(puzzleInput)
-    println(puzzleResultPart2)
-    check(puzzleResultPart2 == 988)
+    fun part2(): Int =
+        generateSequence(true) { round() }.takeWhile { it }.count()
 }
