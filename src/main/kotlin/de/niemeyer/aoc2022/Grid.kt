@@ -17,10 +17,10 @@ data class TileInstructions(val orient: Boolean = ORIENT_NORMAL, val rotate: Sid
 data class GridCellContainer(val value: Boolean, val original: GridCell = GridCell(0, 0))
 
 class Grid(var gridMap: Map<GridCell, GridCellContainer>) {
-    val rowMin = gridMap.keys.minOf { it.row }
-    val rowMax = gridMap.keys.maxOf { it.row }
-    val columnMin = gridMap.keys.minOf { it.column }
-    val columnMax = gridMap.keys.maxOf { it.column }
+    val rowMin = if (gridMap.isEmpty()) 0 else gridMap.keys.minOf { it.row }
+    val rowMax = if (gridMap.isEmpty()) 0 else gridMap.keys.maxOf { it.row }
+    val columnMin = if (gridMap.isEmpty()) 0 else gridMap.keys.minOf { it.column }
+    val columnMax = if (gridMap.isEmpty()) 0 else gridMap.keys.maxOf { it.column }
 
     val columnRangesForRows by lazy {
         val rowRange = gridMap.keys.minOf { it.row }..gridMap.keys.maxOf { it.row }

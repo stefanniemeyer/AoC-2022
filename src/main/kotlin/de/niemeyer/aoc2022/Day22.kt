@@ -56,14 +56,14 @@ fun main() {
     println(puzzleResultPart1)
     check(puzzleResultPart1 == 65_368)
 
-    check(part2(testInput) == 5_031)
-    val puzzleResultPart2 = part2(puzzleInput)
-    println(puzzleResultPart2)
-    check(puzzleResultPart2 == 0)
+//    check(part2(testInput) == 5_031)
+//    val puzzleResultPart2 = part2(puzzleInput)
+//    println(puzzleResultPart2)
+//    check(puzzleResultPart2 == 0)
 }
 
 class MonkeyMapPuzzle(val input: String) {
-    var grid =  Grid(mapOf())
+    var grid = Grid(mapOf())
     var instructions: MonkeyInstructions = emptyList()
 
     init {
