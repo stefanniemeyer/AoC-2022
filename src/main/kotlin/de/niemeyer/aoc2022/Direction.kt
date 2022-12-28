@@ -45,13 +45,17 @@ sealed class Direction {
         override val turnRight = Up
         override val offset = Point2D(-1, 0)
     }
+
+    companion object {
+        val ARROWS = setOf('>', '<', '^', 'v')
+    }
 }
 
 fun Char.toDirection(): Direction =
     when (this) {
-        in listOf('U') -> Direction.Up
-        in listOf('R') -> Direction.Right
-        in listOf('D') -> Direction.Down
-        in listOf('L') -> Direction.Left
+        in listOf('U', '^') -> Direction.Up
+        in listOf('R', '>') -> Direction.Right
+        in listOf('D', 'v') -> Direction.Down
+        in listOf('L', '<') -> Direction.Left
         else -> throw IllegalArgumentException("No such direction $this")
     }

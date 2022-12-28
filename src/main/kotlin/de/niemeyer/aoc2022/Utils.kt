@@ -4,6 +4,7 @@ package de.niemeyer.aoc2022
 
 import java.math.BigInteger
 import java.security.MessageDigest
+import kotlin.math.absoluteValue
 
 /**
  * Converts string to kotlin.aoc2022.niemeyer.aoc2022.md5 hash.
@@ -22,3 +23,21 @@ fun getClassName(): String {
 
     return "main/resources/${className}"
 }
+
+tailrec fun Int.gcd(other: Int): Int {
+    return if (this == 0 || other == 0) {
+        this + other
+    } else {
+        val bigger = maxOf(this.absoluteValue, other.absoluteValue)
+        val smaller = minOf(this.absoluteValue, other.absoluteValue)
+        (bigger % smaller).gcd(smaller)
+    }
+}
+
+fun Int.lcm(other: Int) =
+    if (this == 0 || other == 0) {
+        0
+    } else {
+        (this * other).absoluteValue / this.gcd(other)
+    }
+
