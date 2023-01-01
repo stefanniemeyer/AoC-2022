@@ -5,12 +5,15 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsList
+import de.niemeyer.aoc.direction.CompassDirectionCCS
+import de.niemeyer.aoc.points.*
+import de.niemeyer.aoc.utils.Resources.resourceAsList
+import de.niemeyer.aoc.utils.getClassName
 
 fun main() {
     val name = getClassName()
-    val testInput = resourceAsList(fileName = "${name}_test")
-    val puzzleInput = resourceAsList(name)
+    val testInput = resourceAsList(fileName = "${name}_test.txt")
+    val puzzleInput = resourceAsList(fileName = "${name}.txt")
 
     check(Day23(testInput).part1() == 110)
     val puzzleResultPart1 = Day23(puzzleInput).part1()
@@ -25,11 +28,11 @@ fun main() {
 
 class Day23(val input: List<String>) {
     var elfes = parsePoint2dSetBottomLeft(input).toMutableSet()
-    val directions = ArrayDeque<CompassDirection>().apply {
-        add(CompassDirection.North)
-        add(CompassDirection.South)
-        add(CompassDirection.West)
-        add(CompassDirection.East)
+    val directions = ArrayDeque<CompassDirectionCCS>().apply {
+        add(CompassDirectionCCS.North)
+        add(CompassDirectionCCS.South)
+        add(CompassDirectionCCS.West)
+        add(CompassDirectionCCS.East)
     }
 
     fun round(): Boolean {
@@ -41,7 +44,7 @@ class Day23(val input: List<String>) {
             } else {
                 val candidate = directions.firstOrNull { direction ->
                     listOf(-45, 0, 45).none { testDir ->
-                        elf.move(CompassDirection.fromDegree(direction.degree + testDir)) in elfes
+                        elf.move(CompassDirectionCCS.fromDegree(direction.degree + testDir)) in elfes
                     }
                 }?.let { elf.move(it) } ?: elf
                 proposes.getOrPut(candidate) { mutableListOf() }.add(elf)

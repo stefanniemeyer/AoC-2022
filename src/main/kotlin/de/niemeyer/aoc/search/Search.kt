@@ -1,4 +1,6 @@
-package de.niemeyer.aoc2022
+@file:Suppress("unused")
+
+package de.niemeyer.aoc.search
 
 import java.util.*
 

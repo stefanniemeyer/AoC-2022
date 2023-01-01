@@ -5,12 +5,17 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsList
+import de.niemeyer.aoc.direction.DirectionCCS
+import de.niemeyer.aoc.direction.arrowToDirectionCCS
+import de.niemeyer.aoc.points.Point2D
+import de.niemeyer.aoc.utils.Resources.resourceAsList
+import de.niemeyer.aoc.utils.getClassName
+import de.niemeyer.aoc.utils.lcm
 
 fun main() {
     val name = getClassName()
-    val testInput = resourceAsList(fileName = "${name}_test")
-    val puzzleInput = resourceAsList(name)
+    val testInput = resourceAsList(fileName = "${name}_test.txt")
+    val puzzleInput = resourceAsList(fileName = "${name}.txt")
 
     check(Day24(testInput).part1() == 18)
     val puzzleResultPart1 = Day24(puzzleInput).part1()
@@ -32,15 +37,15 @@ class Day24(val input: List<String>) {
 
     private val steps = mutableMapOf(
         0 to input.flatMapIndexed { y, line ->
-            line.withIndex().filter { it.value in Direction.ARROWS }
+            line.withIndex().filter { it.value in DirectionCCS.ARROWS }
                 .map { (x, c) ->
                     val p = Point2D(x, yMax - y)
-                    p to listOf(Blizzard(p, c.toDirection()))
+                    p to listOf(Blizzard(p, c.arrowToDirectionCCS()))
                 }
         }.toMap()
     )
 
-    data class Blizzard(val pos: Point2D, val direction: Direction)
+    data class Blizzard(val pos: Point2D, val directionCCS: DirectionCCS)
     data class State(val step: Int, val position: Point2D)
 
     fun part1(): Int =
@@ -64,7 +69,7 @@ class Day24(val input: List<String>) {
                         blizzards.map { blizzard -> blizzard.next().let { it.pos to it } }
                     }.groupBy({ it.first }, { it.second }).toMap()
                 }
-                listOf(Direction.Down, Direction.Left, Direction.Up, Direction.Right)
+                listOf(DirectionCCS.Down, DirectionCCS.Left, DirectionCCS.Up, DirectionCCS.Right)
                     .map { dir -> state.position.move(dir) }
                     .filter {
                         (it.x in (1 until xMax) && it.y in (1 until yMax))
@@ -80,7 +85,7 @@ class Day24(val input: List<String>) {
     }
 
     fun Blizzard.next(): Blizzard {
-        val nextPos = this.pos.move(direction).let {
+        val nextPos = this.pos.move(directionCCS).let {
             if (it.x == 0) {
                 it.copy(x = xMax - 1)
             } else if (it.y == 0) {
@@ -94,6 +99,6 @@ class Day24(val input: List<String>) {
             }
         }
 
-        return Blizzard(nextPos, direction)
+        return Blizzard(nextPos, directionCCS)
     }
 }

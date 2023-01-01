@@ -5,13 +5,15 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsList
+import de.niemeyer.aoc.points.Point2D
+import de.niemeyer.aoc.utils.Resources.resourceAsList
+import de.niemeyer.aoc.utils.getClassName
 
 typealias ReservoirMap = Map<Point2D, Char>
 
 fun main() {
     val sand = Point2D(500, 0)
-    var air = '.'
+    val air = '.'
     val moveDown = Point2D(0, 1)
     val moveLeft = Point2D(-1, 1)
     val moveRight = Point2D(1, 1)
@@ -77,8 +79,8 @@ fun main() {
         solve(map, infiniteFloor = true)
 
     val name = getClassName()
-    val testInput = parse(resourceAsList(fileName = "${name}_test")).toMap()
-    val puzzleInput = parse(resourceAsList(name)).toMap()
+    val testInput = parse(resourceAsList(fileName = "${name}_test.txt")).toMap()
+    val puzzleInput = parse(resourceAsList(fileName = "${name}.txt")).toMap()
 
     check(part1(testInput) == 24)
     val testResultPart1 = part1(puzzleInput)

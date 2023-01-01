@@ -5,7 +5,9 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsList
+import de.niemeyer.aoc.points.Point2D
+import de.niemeyer.aoc.utils.Resources.resourceAsList
+import de.niemeyer.aoc.utils.getClassName
 
 fun main() {
     fun part1(input: Hightmap): Int =
@@ -17,8 +19,8 @@ fun main() {
             .keys.minOf { input.countMap.getValue(it) }
 
     val name = getClassName()
-    val testInput = resourceAsList(fileName = "${name}_test")
-    val puzzleInput = resourceAsList(name)
+    val testInput = resourceAsList(fileName = "${name}_test.txt")
+    val puzzleInput = resourceAsList(fileName = "${name}.txt")
 
     val testMap = Hightmap(testInput)
     check(part1(testMap) == 31)

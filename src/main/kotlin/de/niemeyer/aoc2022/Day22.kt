@@ -5,7 +5,13 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsText
+import de.niemeyer.aoc.direction.DirectionCCS
+import de.niemeyer.aoc.direction.DirectionScreen
+import de.niemeyer.aoc.direction.toDirectionCCS
+import de.niemeyer.aoc.grid.Grid
+import de.niemeyer.aoc.grid.GridCellScreen
+import de.niemeyer.aoc.utils.Resources.resourceAsText
+import de.niemeyer.aoc.utils.getClassName
 import kotlin.math.absoluteValue
 
 typealias MonkeyInstructions = List<Pair<Int, Char?>>
@@ -13,8 +19,8 @@ typealias MonkeyInstructions = List<Pair<Int, Char?>>
 fun main() {
     fun part1(input: String): Int {
         val mmp = MonkeyMapPuzzle(input)
-        var currentPos = GridCell(1, mmp.grid.columnRangesForRows.getValue(1).first)
-        var currentDirection: GridDirection = GridDirection.Right
+        var currentPos = GridCellScreen(1, mmp.grid.columnRangesForRows.getValue(1).first)
+        var currentDirection: DirectionScreen = DirectionScreen.Right
         run instructionLoop@{
             mmp.instructions.forEach { (steps, direction) ->
                 run repeatBlock@{
@@ -26,9 +32,9 @@ fun main() {
                         currentPos = testPos
                     }
                 }
-                currentDirection = when (direction?.toDirection()) {
-                    Direction.Left -> currentDirection.turnLeft
-                    Direction.Right -> currentDirection.turnRight
+                currentDirection = when (direction?.toDirectionCCS()) {
+                    DirectionCCS.Left -> currentDirection.turnLeft
+                    DirectionCCS.Right -> currentDirection.turnRight
                     else -> return@instructionLoop
                 }
             }
@@ -39,8 +45,8 @@ fun main() {
 
     fun part2(input: String): Int {
         val mmp = MonkeyMapPuzzle(input)
-        var currentPos = GridCell(mmp.grid.columnRangesForRows.getValue(1).first, 1)
-        var currentDirection: Direction = Direction.Right
+        var currentPos = GridCellScreen(mmp.grid.columnRangesForRows.getValue(1).first, 1)
+        var currentDirectionCCS: DirectionCCS = DirectionCCS.Right
 
         mmp.rearrangeCube(mmp.testCornerCells)
 
@@ -48,8 +54,8 @@ fun main() {
     }
 
     val name = getClassName()
-    val testInput = resourceAsText(fileName = "${name}_test")
-    val puzzleInput = resourceAsText(name)
+    val testInput = resourceAsText(fileName = "${name}_test.txt")
+    val puzzleInput = resourceAsText(fileName = "${name}.txt")
 
     check(part1(testInput) == 6_032)
     val puzzleResultPart1 = part1(puzzleInput)
@@ -69,7 +75,7 @@ class MonkeyMapPuzzle(val input: String) {
     init {
         val parts = input.split("\n\n")
         val gridInput = parts.first().lines().filter { it.isNotBlank() }
-        grid  = Grid.of(gridInput, offset = GridCell(1, 1))
+        grid  = Grid.of(gridInput, offset = GridCellScreen(1, 1))
         instructions = parseInstructions(parts.last())
     }
 
@@ -87,8 +93,8 @@ class MonkeyMapPuzzle(val input: String) {
         return instructions
     }
 
-    fun cycleMove(cell: GridCell, gridDirection: GridDirection): GridCell {
-        val newCell = cell.move(gridDirection)
+    fun cycleMove(cell: GridCellScreen, directionScreen: DirectionScreen): GridCellScreen {
+        val newCell = cell.move(directionScreen)
 
         val rowLimits = grid.rowRangesForColumns.getValue(cell.column)
         val colLimits = grid.columnRangesForRows.getValue(cell.row)
@@ -104,30 +110,30 @@ class MonkeyMapPuzzle(val input: String) {
             else -> newCell.column
         }
 
-        return GridCell(newRow, newCol)
+        return GridCellScreen(newRow, newCol)
     }
 
-    fun isWall(p: GridCell): Boolean =
+    fun isWall(p: GridCellScreen): Boolean =
         grid.gridMap.getValue(p).value
 
     val testCornerCells = listOf(
-        GridCell(5, 1),
-        GridCell(5, 5),
-        GridCell(5, 9),
-        GridCell(9, 13),
-        GridCell(1, 9),
-        GridCell(9, 9)
+        GridCellScreen(5, 1),
+        GridCellScreen(5, 5),
+        GridCellScreen(5, 9),
+        GridCellScreen(9, 13),
+        GridCellScreen(1, 9),
+        GridCellScreen(9, 9)
     )
 
-    fun rearrangeCube(cornerCells: List<GridCell>) {
+    fun rearrangeCube(cornerCells: List<GridCellScreen>) {
         val edgeLength = (cornerCells.first().column - cornerCells.first().row).absoluteValue
         println("Edge length: $edgeLength")
 
         val result = cornerCells.map { corner ->
             (0 until edgeLength).flatMap { row ->
                 (0 until edgeLength).map { col ->
-                    val p = GridCell(corner.column + col, corner.row + row)
-                    GridCell(col, row) to grid.gridMap.getValue(p)
+                    val p = GridCellScreen(corner.column + col, corner.row + row)
+                    GridCellScreen(col, row) to grid.gridMap.getValue(p)
                 }
             }.toMap()
         }
@@ -135,9 +141,9 @@ class MonkeyMapPuzzle(val input: String) {
     }
 }
 
-fun GridDirection.facingToNumber() = when (this) {
-    GridDirection.Right -> 0
-    GridDirection.Up -> 1
-    GridDirection.Down -> 2
-    GridDirection.Left -> 3
+fun DirectionScreen.facingToNumber() = when (this) {
+    DirectionScreen.Right -> 0
+    DirectionScreen.Up -> 1
+    DirectionScreen.Down -> 2
+    DirectionScreen.Left -> 3
 }

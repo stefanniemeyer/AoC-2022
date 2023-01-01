@@ -5,7 +5,8 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsList
+import de.niemeyer.aoc.utils.Resources.resourceAsList
+import de.niemeyer.aoc.utils.getClassName
 
 fun main() {
     val root = "root"
@@ -131,8 +132,8 @@ fun main() {
     }
 
     val name = getClassName()
-    val testInput = resourceAsList(fileName = "${name}_test")
-    val puzzleInput = resourceAsList(name)
+    val testInput = resourceAsList(fileName = "${name}_test.txt")
+    val puzzleInput = resourceAsList(fileName = "${name}.txt")
 
     check(part1(testInput) == 152L)
     val puzzleResultPart1 = part1(puzzleInput)

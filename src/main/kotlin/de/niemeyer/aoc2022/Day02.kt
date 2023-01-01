@@ -5,7 +5,8 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsList
+import de.niemeyer.aoc.utils.Resources.resourceAsList
+import de.niemeyer.aoc.utils.getClassName
 
 fun main() {
     fun part1(input: List<Pair<String, String>>): Int =
@@ -19,15 +20,15 @@ fun main() {
         }
 
     val name = getClassName()
-    val testInput = resourceAsList(fileName = "${name}_test").map { it.toPair() }
-    val puzzleInput = resourceAsList(fileName = name).map { it.toPair() }
+    val testInput = resourceAsList(fileName = "${name}_test.txt").map { it.toPair() }
+    val puzzleInput = resourceAsList(fileName = "${name}.txt").map { it.toPair() }
 
     check(part1(testInput) == 15)
     println(part1(puzzleInput))
     check(part1(puzzleInput) == 12156)
 
-    val testInput2 = resourceAsList(fileName = "${name}_test").map { it.toPairByResult() }
-    val puzzleInput2 = resourceAsList(fileName = name).map { it.toPairByResult() }
+    val testInput2 = resourceAsList(fileName = "${name}_test.txt").map { it.toPairByResult() }
+    val puzzleInput2 = resourceAsList(fileName = "${name}.txt").map { it.toPairByResult() }
 
     check(part2(testInput2) == 12)
     println(part2(puzzleInput2))

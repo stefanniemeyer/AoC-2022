@@ -5,7 +5,8 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsListOfLong
+import de.niemeyer.aoc.utils.Resources.resourceAsListOfLong
+import de.niemeyer.aoc.utils.getClassName
 import kotlin.math.absoluteValue
 
 fun main() {
@@ -51,8 +52,8 @@ fun main() {
         solve(input, 10,811_589_153L)
 
     val name = getClassName()
-    val testInput = resourceAsListOfLong(fileName = "${name}_test")
-    val puzzleInput = resourceAsListOfLong(name)
+    val testInput = resourceAsListOfLong(fileName = "${name}_test.txt")
+    val puzzleInput = resourceAsListOfLong(fileName = "${name}.txt")
 
     check(part1(testInput) == 3L)
     val puzzleResultPart1 = part1(puzzleInput)

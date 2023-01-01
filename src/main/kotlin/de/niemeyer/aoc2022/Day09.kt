@@ -5,7 +5,11 @@ package de.niemeyer.aoc2022
  * Problem Description: https://adventofcode.com/2022/day/9
  */
 
-import de.niemeyer.aoc2022.Resources.resourceAsList
+import de.niemeyer.aoc.direction.DirectionCCS
+import de.niemeyer.aoc.direction.toDirectionCCS
+import de.niemeyer.aoc.points.Point2D
+import de.niemeyer.aoc.utils.Resources.resourceAsList
+import de.niemeyer.aoc.utils.getClassName
 import kotlin.math.sign
 
 fun main() {
@@ -15,7 +19,7 @@ fun main() {
         val visitedTail = mutableSetOf<Point2D>(tail)
         input.forEach { instr ->
             repeat(instr.distance) {
-                head = head.move(instr.direction)
+                head = head.move(instr.directionCCS)
                 tail = neededTailPos(head, tail)
                 visitedTail += tail
             }
@@ -30,7 +34,7 @@ fun main() {
         val visitedLastKnot = mutableSetOf(knots[MAX_KNOTS])
         input.forEach { instr ->
             repeat(instr.distance) {
-                knots[HEAD] = knots[HEAD].move(instr.direction)
+                knots[HEAD] = knots[HEAD].move(instr.directionCCS)
                 for (i in 1..MAX_KNOTS) {
                     knots[i] = neededTailPos(knots[i - 1], knots[i])
                 }
@@ -42,23 +46,23 @@ fun main() {
     }
 
     val name = getClassName()
-    val testInput = resourceAsList(fileName = "${name}_test").map { it.toMovement() }
-    val puzzleInput = resourceAsList(name).map { it.toMovement() }
+    val testInput = resourceAsList(fileName = "${name}_test.txt").map { it.toMovement() }
+    val puzzleInput = resourceAsList(fileName = "${name}.txt").map { it.toMovement() }
 
     check(part1(testInput) == 13)
     println(part1(puzzleInput))
     check(part1(puzzleInput) == 5_902)
 
-    val testInput2 = resourceAsList(fileName = "${name}_test2").map { it.toMovement() }
+    val testInput2 = resourceAsList(fileName = "${name}_test2.txt").map { it.toMovement() }
     check(part2(testInput2) == 36)
     println(part2(puzzleInput))
     check(part2(puzzleInput) == 2_445)
 }
 
-data class Movement(val direction: Direction, val distance: Int)
+data class Movement(val directionCCS: DirectionCCS, val distance: Int)
 
 fun String.toMovement(): Movement {
-    val direction = this[0].toDirection()
+    val direction = this[0].toDirectionCCS()
     val distance = this.substringAfter(" ").toInt()
     return Movement(direction, distance)
 }

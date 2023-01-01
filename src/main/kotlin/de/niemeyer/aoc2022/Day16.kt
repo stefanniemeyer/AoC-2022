@@ -7,8 +7,12 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsList
+import de.niemeyer.aoc.utils.Resources.resourceAsList
 import com.github.shiguruikai.combinatoricskt.combinations
+import de.niemeyer.aoc.search.Edge
+import de.niemeyer.aoc.search.Vertex
+import de.niemeyer.aoc.search.dijkstra
+import de.niemeyer.aoc.utils.getClassName
 
 fun main() {
     var shortestPathCosts = mutableMapOf<String, MutableMap<String, Int>>()
@@ -58,8 +62,8 @@ fun main() {
     }
 
     val name = getClassName()
-    val testInput = parseInput(resourceAsList(fileName = "${name}_test"))
-    val puzzleInput = parseInput(resourceAsList(name))
+    val testInput = parseInput(resourceAsList(fileName = "${name}_test.txt"))
+    val puzzleInput = parseInput(resourceAsList(fileName = "${name}.txt"))
 
     shortestPathCosts = findShortestsPaths(testInput)
     check(part1(testInput) == 1_651)

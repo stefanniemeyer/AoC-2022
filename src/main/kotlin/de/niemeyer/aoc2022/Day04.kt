@@ -5,7 +5,9 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsList
+import de.niemeyer.aoc.utils.Resources.resourceAsList
+import de.niemeyer.aoc.utils.getClassName
+import de.niemeyer.aoc.utils.intersects
 
 typealias Assignment = Pair<IntRange, IntRange>
 
@@ -31,8 +33,8 @@ fun main() {
     }.count { it }
 
     val name = getClassName()
-    val testInput = parseInput(resourceAsList(fileName = "${name}_test"))
-    val puzzleInput = parseInput(resourceAsList(name))
+    val testInput = parseInput(resourceAsList(fileName = "${name}_test.txt"))
+    val puzzleInput = parseInput(resourceAsList(fileName = "${name}.txt"))
 
     check(part1(testInput) == 2)
     println(part1(puzzleInput))

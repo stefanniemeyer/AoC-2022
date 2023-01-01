@@ -1,6 +1,10 @@
-package de.niemeyer.aoc2022
+@file:Suppress("unused")
 
+package de.niemeyer.aoc.utils
+
+import de.niemeyer.aoc.points.Point2D
 import java.io.File
+import java.net.URI
 
 typealias Point2DBooleanMap = Map<Point2D, Boolean>
 typealias Point2DIntMap = Map<Point2D, Int>
@@ -11,10 +15,10 @@ internal object Resources {
         resourceAsList(fileName).reduce { a, b -> "$a$delimiter$b" }
 
     fun resourceAsText(fileName: String): String =
-        File("src", "$fileName.txt").readText()
+        File(fileName.toURI()).readText()
 
     fun resourceAsList(fileName: String): List<String> =
-        File("src", "$fileName.txt").readLines()
+        File(fileName.toURI()).readLines()
 
     fun resourceAsListOfInt(fileName: String): List<Int> =
         resourceAsList(fileName).map { it.toInt() }
@@ -23,10 +27,10 @@ internal object Resources {
         resourceAsList(fileName).map { it.toLong() }
 
     fun resourceAsListOfString(fileName: String): List<String> =
-        File("src", "$fileName.txt").readLines()
+        File(fileName.toURI()).readLines()
 
     fun resourceAsPoint2DBooleanMap(fileName: String): Point2DBooleanMap {
-        val input = File("src", "$fileName.txt").readLines()
+        val input = File(fileName.toURI()).readLines()
 
         return input.flatMapIndexed { y, row ->
             row.mapIndexed { x, point ->
@@ -36,7 +40,7 @@ internal object Resources {
     }
 
     fun resourceAsPoint2DIntMap(fileName: String): Point2DIntMap {
-        val input = File("src", "$fileName.txt").readLines()
+        val input = File(fileName.toURI()).readLines()
 
         return input.flatMapIndexed { y, row ->
             row.mapIndexed { x, point ->
@@ -46,7 +50,7 @@ internal object Resources {
     }
 
     fun resourceAsArrayOfIntArray(fileName: String): Array<IntArray> {
-        val input = File("src", "$fileName.txt").readLines()
+        val input = File(fileName.toURI()).readLines()
 
         return input.map { row ->
             row.map { digit ->
@@ -56,7 +60,7 @@ internal object Resources {
     }
 
     fun resourceAsArrayOfCharArray(fileName: String): Array<CharArray> {
-        val input = File("src", "$fileName.txt").readLines()
+        val input = File(fileName.toURI()).readLines()
 
         return input.map { row ->
             row.map { digit ->
@@ -64,4 +68,8 @@ internal object Resources {
             }.toCharArray()
         }.toTypedArray()
     }
+
+    private fun String.toURI(): URI =
+        Resources.javaClass.classLoader.getResource(this)?.toURI()
+            ?: throw IllegalArgumentException("Cannot find Resource: $this")
 }

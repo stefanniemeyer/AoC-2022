@@ -5,12 +5,14 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsList
+import de.niemeyer.aoc.points.Point3D
+import de.niemeyer.aoc.utils.Resources.resourceAsList
+import de.niemeyer.aoc.utils.getClassName
 
 fun main() {
     val name = getClassName()
-    val testInput = resourceAsList(fileName = "${name}_test").map { Point3D.of(it) }.toSet()
-    val puzzleInput = resourceAsList(name).map { Point3D.of(it) }.toSet()
+    val testInput = resourceAsList(fileName = "${name}_test.txt").map { Point3D.of(it) }.toSet()
+    val puzzleInput = resourceAsList(fileName = "${name}.txt").map { Point3D.of(it) }.toSet()
 
     check(Pond(testInput).solvePart1() == 64)
     val puzzleResultPart1 = Pond(puzzleInput).solvePart1()

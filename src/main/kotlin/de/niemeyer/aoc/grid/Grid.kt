@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package de.niemeyer.aoc2022
+package de.niemeyer.aoc.grid
 
 const val ORIENT_NORMAL = false
 const val ORIENT_FLIPPED = true
@@ -14,9 +14,9 @@ enum class Side(val id: Int) {
 
 data class TileInstructions(val orient: Boolean = ORIENT_NORMAL, val rotate: Side = Side.TOP)
 
-data class GridCellContainer(val value: Boolean, val original: GridCell = GridCell(0, 0))
+data class GridCellContainer(val value: Boolean, val original: GridCellScreen = GridCellScreen(0, 0))
 
-class Grid(var gridMap: Map<GridCell, GridCellContainer>) {
+class Grid(var gridMap: Map<GridCellScreen, GridCellContainer>, val offset: GridCellScreen = GridCellScreen(0, 0)) {
     val rowMin = if (gridMap.isEmpty()) 0 else gridMap.keys.minOf { it.row }
     val rowMax = if (gridMap.isEmpty()) 0 else gridMap.keys.maxOf { it.row }
     val columnMin = if (gridMap.isEmpty()) 0 else gridMap.keys.minOf { it.column }
@@ -45,8 +45,8 @@ class Grid(var gridMap: Map<GridCell, GridCellContainer>) {
 
         for (row in 0..rows) {
             for (column in 0..columns) {
-                if (gridMap.containsKey(GridCell(row, column))) {
-                    print(if (gridMap.getValue(GridCell(row, column)).value) '#' else '.')
+                if (gridMap.containsKey(GridCellScreen(row, column))) {
+                    print(if (gridMap.getValue(GridCellScreen(row, column)).value) '#' else '.')
                 } else {
                     print(" ")
                 }
@@ -54,11 +54,6 @@ class Grid(var gridMap: Map<GridCell, GridCellContainer>) {
             println()
         }
     }
-
-//    fun rotateClockwise(): Grid =
-//        gridMap.map { (cell, container) ->
-//            GridCell(cell.column, -cell.row) to container
-//        }.toMap().let { Grid(it) }
 
     fun printWithDefault(default: Boolean = false) {
         val points = gridMap.keys.toList()
@@ -69,7 +64,7 @@ class Grid(var gridMap: Map<GridCell, GridCellContainer>) {
             for (column in 0..columns) {
                 print(
                     if (gridMap.getOrDefault(
-                            GridCell(row, column),
+                            GridCellScreen(row, column),
                             GridCellContainer(default)
                         ).value
                     ) '#' else '.'
@@ -79,46 +74,53 @@ class Grid(var gridMap: Map<GridCell, GridCellContainer>) {
         }
     }
 
-    fun rotate(instructions: TileInstructions) {
+    fun rotate(instructions: TileInstructions): Grid {
         val rowProg = IntProgression.fromClosedRange(rowMin, rowMax, 1)
         val columnProg = IntProgression.fromClosedRange(columnMin, columnMax, 1)
+        var newOffset = offset
 
-        val result = mutableMapOf<GridCell, GridCellContainer>()
-        println("rotate: ${instructions.rotate}")
+        val result = mutableMapOf<GridCellScreen, GridCellContainer>()
+//        println("rotate: ${instructions.rotate}")
         when (instructions.orient) {
             ORIENT_NORMAL -> {
                 when (instructions.rotate) {
                     Side.TOP -> {
                         // nothing to do here
-                        printExisting()
-                        return
+                        result.putAll(gridMap)
                     }
 
                     Side.RIGHT -> {
                         for (row in rowProg) {
                             for (col in columnProg) {
-                                result[GridCell(col, rowMax - row + 1)] = gridMap.getValue(GridCell(row, col))
+                                result[GridCellScreen(col, rowMax - row + offset.row)] =
+                                    gridMap.getValue(GridCellScreen(row, col))
                             }
                         }
-                        result.toMap().let { Grid(it).printExisting() }
+                        result.toMap()
+                        newOffset = GridCellScreen(offset.column, offset.row)
                     }
 
                     Side.BOTTOM -> {
                         for (row in rowProg) {
                             for (col in columnProg) {
-                                result[GridCell(rowMax - row + 1, columnMax - col + 1)] = gridMap.getValue(GridCell(row, col))
+                                result[GridCellScreen(rowMax - row + offset.row, columnMax - col + offset.column)] =
+                                    gridMap.getValue(
+                                        GridCellScreen(row, col)
+                                    )
                             }
                         }
-                        result.toMap().let { Grid(it).printExisting() }
+                        result.toMap()
                     }
 
                     Side.LEFT -> {
                         for (row in rowProg) {
                             for (col in columnProg) {
-                                result[GridCell(columnMax - col + 1, row)] = gridMap.getValue(GridCell(row, col))
+                                result[GridCellScreen(columnMax - col + offset.column, row)] =
+                                    gridMap.getValue(GridCellScreen(row, col))
                             }
                         }
-                        result.toMap().let { Grid(it).printExisting() }
+                        result.toMap()
+                        newOffset = GridCellScreen(offset.column, offset.row)
                     }
                 }
             }
@@ -150,28 +152,28 @@ class Grid(var gridMap: Map<GridCell, GridCellContainer>) {
             else -> error("Unknown orientation ${instructions.orient}")
         }
 
-        gridMap = result.toMap()
+        return Grid(result.toMap(), newOffset)
     }
 
     companion object {
-        fun of(input: List<String>, offset: GridCell = GridCell(0, 0), ignoreChar: Char = ' '): Grid =
+        fun of(input: List<String>, offset: GridCellScreen = GridCellScreen(0, 0), ignoreChar: Char = ' '): Grid =
             input.mapIndexed { rowIndex, row ->
                 row.mapIndexedNotNull { columnIndex, c ->
                     if (c == ignoreChar) {
                         null
                     } else {
-                        val cell = GridCell(rowIndex + offset.row, columnIndex + offset.column)
+                        val cell = GridCellScreen(rowIndex + offset.row, columnIndex + offset.column)
                         cell to GridCellContainer(c == '#', cell.copy())
                     }
                 }
-            }.flatten().toMap().let { Grid(it) }
+            }.flatten().toMap().let { Grid(it, offset) }
 
-        fun of(input: String): Grid =
-            of(input.lines())
+        fun of(input: String, offset: GridCellScreen = GridCellScreen(0, 0), ignoreChar: Char = ' '): Grid =
+            of(input.lines(), offset, ignoreChar)
     }
 }
 
-fun Set<GridCell>.printBottomLeft() {
+fun Set<GridCellScreen>.printBottomLeft() {
     val rowMin = this.minOf { it.row }
     val rowMax = this.maxOf { it.row }
     val columnMin = this.minOf { it.column }
@@ -179,7 +181,7 @@ fun Set<GridCell>.printBottomLeft() {
 
     for (row in rowMin..rowMax) {
         for (column in columnMin..columnMax) {
-            print(if (contains(GridCell(row, column))) '#' else '.')
+            print(if (contains(GridCellScreen(row, column))) '#' else '.')
         }
         println()
     }

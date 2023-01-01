@@ -5,7 +5,8 @@ package de.niemeyer.aoc2022
  * Problem Description: https://adventofcode.com/2022/day/5
  */
 
-import de.niemeyer.aoc2022.Resources.resourceAsText
+import de.niemeyer.aoc.utils.Resources.resourceAsText
+import de.niemeyer.aoc.utils.getClassName
 
 typealias CrateStacks = List<ArrayDeque<Char>>
 
@@ -60,8 +61,8 @@ fun main() {
     }
 
     val name = getClassName()
-    val testInput = resourceAsText(fileName = "${name}_test")
-    val puzzleInput = resourceAsText(name)
+    val testInput = resourceAsText(fileName = "${name}_test.txt")
+    val puzzleInput = resourceAsText(fileName = "${name}.txt")
 
     check(part1(testInput) == "CMZ")
     println(part1(puzzleInput))

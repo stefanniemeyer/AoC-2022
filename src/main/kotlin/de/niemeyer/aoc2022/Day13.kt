@@ -7,7 +7,8 @@ package de.niemeyer.aoc2022
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
-import de.niemeyer.aoc2022.Resources.resourceAsText
+import de.niemeyer.aoc.utils.Resources.resourceAsText
+import de.niemeyer.aoc.utils.getClassName
 
 @Serializable
 class Packet(val data: JsonArray) : Comparable<Packet> {
@@ -59,8 +60,8 @@ fun main() {
     }
 
     val name = getClassName()
-    val testInput = resourceAsText(fileName = "${name}_test").trim()
-    val puzzleInput = resourceAsText(name).trim()
+    val testInput = resourceAsText(fileName = "${name}_test.txt").trim()
+    val puzzleInput = resourceAsText(fileName = "${name}.txt").trim()
 
     check(part1(testInput) == 13)
     val puzzleResult = part1(puzzleInput)

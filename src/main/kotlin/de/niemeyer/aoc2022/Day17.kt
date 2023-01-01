@@ -5,7 +5,8 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsText
+import de.niemeyer.aoc.utils.Resources.resourceAsText
+import de.niemeyer.aoc.utils.getClassName
 
 // chamber is 7 units wide
 // rock appears so that its left edge is two units away from the left wall
@@ -89,8 +90,8 @@ fun main() {
         solve(input, 1_000_000_000_000L)
 
     val name = getClassName()
-    val testInput = resourceAsText(fileName = "${name}_test").trim()
-    val puzzleInput = resourceAsText(name).trim()
+    val testInput = resourceAsText(fileName = "${name}_test.txt").trim()
+    val puzzleInput = resourceAsText(fileName = "${name}.txt").trim()
 
     check(part1(testInput) == 3_068L)
     val puzzleResultPart1 = part1(puzzleInput)

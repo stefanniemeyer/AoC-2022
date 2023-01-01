@@ -5,7 +5,11 @@ package de.niemeyer.aoc2022
  * Problem Description: https://adventofcode.com/2022/day/8
  */
 
-import de.niemeyer.aoc2022.Resources.resourceAsList
+import de.niemeyer.aoc.points.Point2D
+import de.niemeyer.aoc.utils.Resources.resourceAsList
+import de.niemeyer.aoc.utils.getClassName
+import de.niemeyer.aoc.utils.product
+import de.niemeyer.aoc.utils.takeUntil
 
 fun main() {
     fun part1(input: TreeMap): Int =
@@ -21,8 +25,8 @@ fun main() {
     }
 
     val name = getClassName()
-    val testInput = resourceAsList(fileName = "${name}_test").toPointMap()
-    val puzzleInput = resourceAsList(name).toPointMap()
+    val testInput = resourceAsList(fileName = "${name}_test.txt").toPointMap()
+    val puzzleInput = resourceAsList(fileName = "${name}.txt").toPointMap()
 
     check(part1(testInput) == 21)
     println(part1(puzzleInput))

@@ -5,7 +5,8 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsText
+import de.niemeyer.aoc.utils.Resources.resourceAsText
+import de.niemeyer.aoc.utils.getClassName
 
 fun main() {
     fun part1(input: List<Int>): Int =
@@ -20,8 +21,8 @@ fun main() {
         }.sortedDescending()
 
     val name = getClassName()
-    val testInput = readInput(fileName = "${name}_test")
-    val puzzleInput = readInput(fileName = name)
+    val testInput = readInput(fileName = "${name}_test.txt")
+    val puzzleInput = readInput(fileName = "${name}.txt")
 
     check(part1(testInput) == 24_000)
     println(part1(puzzleInput))

@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package de.niemeyer.aoc2022
+package de.niemeyer.aoc.utils
 
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -14,15 +14,12 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
     .padStart(32, '0')
 
 
-fun getClassName(): String {
-    val className = Throwable().stackTrace.first { it.className.contains("Day") }
+fun getClassName(): String =
+    Throwable().stackTrace.first { it.className.contains("Day") }
         .className
         .split(".")
         .last()
         .removeSuffix("Kt")
-
-    return "main/resources/${className}"
-}
 
 tailrec fun Int.gcd(other: Int): Int {
     return if (this == 0 || other == 0) {

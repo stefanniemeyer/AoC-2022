@@ -5,7 +5,8 @@ package de.niemeyer.aoc2022
  * Problem Description: https://adventofcode.com/2022/day/10
  */
 
-import de.niemeyer.aoc2022.Resources.resourceAsList
+import de.niemeyer.aoc.utils.Resources.resourceAsList
+import de.niemeyer.aoc.utils.getClassName
 
 fun main() {
     fun part1(input: Map<Int, Int>): Int =
@@ -24,8 +25,8 @@ fun main() {
     }
 
     val name = getClassName()
-    val testInput = processInstructions(resourceAsList(fileName = "${name}_test"))
-    val puzzleInput = processInstructions(resourceAsList(name))
+    val testInput = processInstructions(resourceAsList(fileName = "${name}_test.txt"))
+    val puzzleInput = processInstructions(resourceAsList(fileName = "${name}.txt"))
 
     check(part1(testInput) == 13_140)
     println(part1(puzzleInput))

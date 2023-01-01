@@ -5,7 +5,11 @@
 
 package de.niemeyer.aoc2022
 
-import de.niemeyer.aoc2022.Resources.resourceAsList
+import de.niemeyer.aoc.points.Point2D
+import de.niemeyer.aoc.utils.Resources.resourceAsList
+import de.niemeyer.aoc.utils.getClassName
+import de.niemeyer.aoc.utils.intersects
+import de.niemeyer.aoc.utils.union
 import kotlin.math.absoluteValue
 
 val inputSensorLineRegex =
@@ -69,8 +73,8 @@ fun main() {
     }
 
     val name = getClassName()
-    val testInput = resourceAsList(fileName = "${name}_test")
-    val puzzleInput = resourceAsList(name)
+    val testInput = resourceAsList(fileName = "${name}_test.txt")
+    val puzzleInput = resourceAsList(fileName = "${name}.txt")
 
     check(part1(testInput, 10) == 26)
     val puzzleResultPart1 = part1(puzzleInput, 2_000_000)
