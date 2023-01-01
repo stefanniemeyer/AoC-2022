@@ -160,4 +160,73 @@ class GridTest {
             assert(gq2at53.gridMap.keys.containsAll(resAt53.gridMap.keys))
         }
     }
+
+    val asym = """
+        |  #.#
+        | #.#
+        |#######
+    """.trimMargin()
+
+    val gq = Grid.of(asym)
+
+    @Test
+    @DisplayName("columnRangesForRows")
+    fun getColumnRangesForRows() {
+        val correct = listOf(
+            2..4,
+            1..3,
+            0..6,
+        )
+        gq.columnRangesForRows.forEach { (row, range) ->
+            assertEquals(correct[row], range)
+        }
+    }
+
+    @Test
+    @DisplayName("rowRangesForColumns")
+    fun getRowRangesForColumns() {
+        val correct = listOf(
+            2..2,
+            1..2,
+            0..2,
+            0..2,
+            0..2,
+            2..2,
+            2..2,
+        )
+        gq.rowRangesForColumns.forEach { (column, range) ->
+            assertEquals(correct[column], range)
+        }
+    }
+
+    @Test
+    @DisplayName("toPrintableStringExisting")
+    fun testToPrintableStringExisting() {
+        val qne = listOf(
+            "      ",
+            "   #  ",
+            "  #.# ",
+            " #####",
+        ).joinToString("\n")
+        val gpne = Grid.of(qne)
+        val res = gpne.toPrintableStringExisting()
+        assertEquals(qne, res)
+    }
+
+    @Test
+    @DisplayName("toPrintableStringWithDefault")
+    fun testToPrintableStringWithDefault() {
+        val mv = mapOf(
+            GridCellScreen(1, 2) to GridCellContainer(true),
+            GridCellScreen(2, 4) to GridCellContainer(true),
+        )
+        val res = Grid(mv).toPrintableStringWithDefault()
+        assertEquals(
+            listOf(
+                "#..",
+                "..#",
+            ).joinToString("\n"),
+            res
+        )
+    }
 }

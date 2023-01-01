@@ -140,15 +140,16 @@ class Point2DTest {
         CompassDirectionCCS.NorthWest,
     )
 
+    val offsets = listOf(
+        Point2D(0, 1), Point2D(1, 1),
+        Point2D(1, 0), Point2D(1, -1),
+        Point2D(0, -1), Point2D(-1, -1),
+        Point2D(-1, 0), Point2D(-1, 1),
+    )
+
     @Test
     @DisplayName("move")
     fun testMove() {
-        val offsets = listOf(
-            Point2D(0, 1), Point2D(1, 1),
-            Point2D(1, 0), Point2D(1, -1),
-            Point2D(0, -1), Point2D(-1, -1),
-            Point2D(-1, 0), Point2D(-1, 1),
-        )
         val ps = listOf(
             Point2D(3, 7),
             Point2D(-3, 7),
@@ -165,12 +166,6 @@ class Point2DTest {
     @Test
     @DisplayName("moveTimes")
     fun testMoveTimes() {
-        val offsets = listOf(
-            Point2D(0, 1), Point2D(1, 1),
-            Point2D(1, 0), Point2D(1, -1),
-            Point2D(0, -1), Point2D(-1, -1),
-            Point2D(-1, 0), Point2D(-1, 1),
-        )
         val ps = listOf(
             Point2D(3, 7),
             Point2D(-3, 7),

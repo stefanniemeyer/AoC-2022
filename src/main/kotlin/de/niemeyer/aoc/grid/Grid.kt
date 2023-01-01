@@ -38,42 +38,6 @@ class Grid(var gridMap: Map<GridCellScreen, GridCellContainer>, val offset: Grid
         }
     }
 
-    fun printExisting() {
-        val points = gridMap.keys.toList()
-        val rows = points.maxOf { it.row }
-        val columns = points.maxOf { it.column }
-
-        for (row in 0..rows) {
-            for (column in 0..columns) {
-                if (gridMap.containsKey(GridCellScreen(row, column))) {
-                    print(if (gridMap.getValue(GridCellScreen(row, column)).value) '#' else '.')
-                } else {
-                    print(" ")
-                }
-            }
-            println()
-        }
-    }
-
-    fun printWithDefault(default: Boolean = false) {
-        val points = gridMap.keys.toList()
-        val rows = points.maxOf { it.row }
-        val columns = points.maxOf { it.column }
-
-        for (row in 0..rows) {
-            for (column in 0..columns) {
-                print(
-                    if (gridMap.getOrDefault(
-                            GridCellScreen(row, column),
-                            GridCellContainer(default)
-                        ).value
-                    ) '#' else '.'
-                )
-            }
-            println()
-        }
-    }
-
     fun rotate(instructions: TileInstructions): Grid {
         val rowProg = IntProgression.fromClosedRange(rowMin, rowMax, 1)
         val columnProg = IntProgression.fromClosedRange(columnMin, columnMax, 1)
@@ -104,9 +68,7 @@ class Grid(var gridMap: Map<GridCellScreen, GridCellContainer>, val offset: Grid
                         for (row in rowProg) {
                             for (col in columnProg) {
                                 result[GridCellScreen(rowMax - row + offset.row, columnMax - col + offset.column)] =
-                                    gridMap.getValue(
-                                        GridCellScreen(row, col)
-                                    )
+                                    gridMap.getValue(GridCellScreen(row, col))
                             }
                         }
                         result.toMap()
@@ -155,6 +117,42 @@ class Grid(var gridMap: Map<GridCellScreen, GridCellContainer>, val offset: Grid
         return Grid(result.toMap(), newOffset)
     }
 
+    fun printExisting() =
+        println(toPrintableStringExisting())
+
+    fun toPrintableStringExisting(): String =
+        buildString {
+            for (row in offset.row..rowMax) {
+                for (column in offset.column..columnMax) {
+                    if (gridMap.containsKey(GridCellScreen(row, column))) {
+                        append(if (gridMap.getValue(GridCellScreen(row, column)).value) '#' else '.')
+                    } else {
+                        append(" ")
+                    }
+                }
+                appendLine()
+            }
+        }.removeSuffix(System.lineSeparator())
+
+    fun printWithDefault(default: Boolean = false) =
+        println(toPrintableStringWithDefault(default))
+
+    fun toPrintableStringWithDefault(default: Boolean = false): String =
+        buildString {
+            for (row in rowMin..rowMax) {
+                for (column in columnMin..columnMax) {
+                    append(
+                        if (gridMap.getOrDefault(
+                                GridCellScreen(row, column),
+                                GridCellContainer(default)
+                            ).value
+                        ) '#' else '.'
+                    )
+                }
+                appendLine()
+            }
+        }.removeSuffix(System.lineSeparator())
+
     companion object {
         fun of(input: List<String>, offset: GridCellScreen = GridCellScreen(0, 0), ignoreChar: Char = ' '): Grid =
             input.mapIndexed { rowIndex, row ->
@@ -170,19 +168,5 @@ class Grid(var gridMap: Map<GridCellScreen, GridCellContainer>, val offset: Grid
 
         fun of(input: String, offset: GridCellScreen = GridCellScreen(0, 0), ignoreChar: Char = ' '): Grid =
             of(input.lines(), offset, ignoreChar)
-    }
-}
-
-fun Set<GridCellScreen>.printBottomLeft() {
-    val rowMin = this.minOf { it.row }
-    val rowMax = this.maxOf { it.row }
-    val columnMin = this.minOf { it.column }
-    val columnMax = this.maxOf { it.column }
-
-    for (row in rowMin..rowMax) {
-        for (column in columnMin..columnMax) {
-            print(if (contains(GridCellScreen(row, column))) '#' else '.')
-        }
-        println()
     }
 }

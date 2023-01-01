@@ -110,7 +110,7 @@ class ExtensionsKtTest {
     @DisplayName("union")
     fun testUnion() {
         assertEquals(0..15, 0..10 union 5..15)
-        assertEquals(-5..10, 10..15 union -5..-3)
+        assertEquals(-5..15, 10..15 union -5..-3)
     }
 
     @Test

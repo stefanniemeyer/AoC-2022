@@ -47,7 +47,7 @@ data class GridCellScreen(val row: Int, val column: Int) {
         GridCellScreen(row = column * -1, column = row)
 
     infix fun lineTo(other: GridCellScreen): List<GridCellScreen> {
-        val rowDelta = (other.row - column).sign
+        val rowDelta = (other.row - row).sign
         val columnDelta = (other.column - column).sign
         val steps = maxOf((row - other.row).absoluteValue, (column - other.column).absoluteValue)
         return (1..steps).scan(this) { last, _ ->
