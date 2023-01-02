@@ -1,5 +1,6 @@
 package de.niemeyer.aoc.grid
 
+import de.niemeyer.aoc.direction.DirectionScreen
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -63,7 +64,7 @@ class GridTest {
         @Test
         @DisplayName("rotate top")
         fun testRotateTop() {
-            val res = gq1.rotate(TileInstructions(ORIENT_NORMAL, Side.TOP))
+            val res = gq1.rotate(TileInstructions(DirectionScreen.Up))
             assertEquals(gq1.gridMap.keys.size, res.gridMap.keys.size)
             assertEquals(gq1.offset.row, res.offset.row)
             assertEquals(gq1.offset.column, res.offset.column)
@@ -78,7 +79,7 @@ class GridTest {
                 assertEquals(org, res.gridMap.getValue(newPos).original)
             }
 
-            val resAt35 = gq1at35.rotate(TileInstructions(ORIENT_NORMAL, Side.TOP))
+            val resAt35 = gq1at35.rotate(TileInstructions(DirectionScreen.Up))
             assertEquals(gq1at35.gridMap.keys.size, resAt35.gridMap.keys.size)
             assertEquals(gq1at35.offset.row, resAt35.offset.row)
             assertEquals(gq1at35.offset.column, resAt35.offset.column)
@@ -88,7 +89,7 @@ class GridTest {
         @Test
         @DisplayName("rotate right")
         fun testRotateRight() {
-            val res = gq1.rotate(TileInstructions(ORIENT_NORMAL, Side.RIGHT))
+            val res = gq1.rotate(TileInstructions(DirectionScreen.Right))
             assertEquals(gq4.gridMap.keys.size, res.gridMap.keys.size)
             assertEquals(gq4.offset.row, res.offset.row)
             assertEquals(gq4.offset.column, res.offset.column)
@@ -103,7 +104,7 @@ class GridTest {
                 assertEquals(org, res.gridMap.getValue(newPos).original)
             }
 
-            val resAt53 = gq1at35.rotate(TileInstructions(ORIENT_NORMAL, Side.RIGHT))
+            val resAt53 = gq1at35.rotate(TileInstructions(DirectionScreen.Right))
             assertEquals(gq4at53.gridMap.keys.size, resAt53.gridMap.keys.size)
             assertEquals(gq4at53.offset.row, resAt53.offset.row)
             assertEquals(gq4at53.offset.column, resAt53.offset.column)
@@ -113,7 +114,7 @@ class GridTest {
         @Test
         @DisplayName("rotate bottom")
         fun testRotateBottom() {
-            val res = gq1.rotate(TileInstructions(ORIENT_NORMAL, Side.BOTTOM))
+            val res = gq1.rotate(TileInstructions(DirectionScreen.Down))
             assertEquals(gq3.gridMap.keys.size, res.gridMap.keys.size)
             assertEquals(gq3.offset.row, res.offset.row)
             assertEquals(gq3.offset.column, res.offset.column)
@@ -128,7 +129,7 @@ class GridTest {
                 assertEquals(org, res.gridMap.getValue(newPos).original)
             }
 
-            val resAt35 = gq1at35.rotate(TileInstructions(ORIENT_NORMAL, Side.BOTTOM))
+            val resAt35 = gq1at35.rotate(TileInstructions(DirectionScreen.Down))
             assertEquals(gq3at35.gridMap.keys.size, resAt35.gridMap.keys.size)
             assertEquals(gq3at35.offset.row, resAt35.offset.row)
             assertEquals(gq3at35.offset.column, resAt35.offset.column)
@@ -138,7 +139,7 @@ class GridTest {
         @Test
         @DisplayName("rotate left")
         fun testRotateLeft() {
-            val res = gq1.rotate(TileInstructions(ORIENT_NORMAL, Side.LEFT))
+            val res = gq1.rotate(TileInstructions(DirectionScreen.Left))
             assertEquals(gq2.gridMap.keys.size, res.gridMap.keys.size)
             assertEquals(gq2.offset.row, res.offset.row)
             assertEquals(gq2.offset.column, res.offset.column)
@@ -153,7 +154,7 @@ class GridTest {
                 assertEquals(org, res.gridMap.getValue(newPos).original)
             }
 
-            val resAt53 = gq1at35.rotate(TileInstructions(ORIENT_NORMAL, Side.LEFT))
+            val resAt53 = gq1at35.rotate(TileInstructions(DirectionScreen.Left))
             assertEquals(gq2at53.gridMap.keys.size, resAt53.gridMap.keys.size)
             assertEquals(gq2at53.offset.row, resAt53.offset.row)
             assertEquals(gq2at53.offset.column, resAt53.offset.column)

@@ -2,17 +2,14 @@
 
 package de.niemeyer.aoc.grid
 
-const val ORIENT_NORMAL = false
-const val ORIENT_FLIPPED = true
+import de.niemeyer.aoc.direction.DirectionScreen
 
-enum class Side(val id: Int) {
-    TOP(0),
-    RIGHT(1),
-    BOTTOM(2),
-    LEFT(3),
+enum class ORIENTATION {
+    NORMAL,
+    FLIPPED
 }
 
-data class TileInstructions(val orient: Boolean = ORIENT_NORMAL, val rotate: Side = Side.TOP)
+data class TileInstructions(val rotate: DirectionScreen = DirectionScreen.Up, val orient: ORIENTATION = ORIENTATION.NORMAL)
 
 data class GridCellContainer(val value: Boolean, val original: GridCellScreen = GridCellScreen(0, 0))
 
@@ -44,75 +41,62 @@ class Grid(var gridMap: Map<GridCellScreen, GridCellContainer>, val offset: Grid
         var newOffset = offset
 
         val result = mutableMapOf<GridCellScreen, GridCellContainer>()
-//        println("rotate: ${instructions.rotate}")
+        val transFunc: (Int, Int) -> GridCellScreen
         when (instructions.orient) {
-            ORIENT_NORMAL -> {
+            ORIENTATION.NORMAL -> {
                 when (instructions.rotate) {
-                    Side.TOP -> {
-                        // nothing to do here
-                        result.putAll(gridMap)
-                    }
+                    DirectionScreen.Up -> transFunc = { r, c -> GridCellScreen(r, c) }
 
-                    Side.RIGHT -> {
-                        for (row in rowProg) {
-                            for (col in columnProg) {
-                                result[GridCellScreen(col, rowMax - row + offset.row)] =
-                                    gridMap.getValue(GridCellScreen(row, col))
-                            }
-                        }
-                        result.toMap()
+                    DirectionScreen.Right -> {
+                        transFunc = { r, c -> GridCellScreen(c, rowMax - r + offset.row) }
                         newOffset = GridCellScreen(offset.column, offset.row)
                     }
 
-                    Side.BOTTOM -> {
-                        for (row in rowProg) {
-                            for (col in columnProg) {
-                                result[GridCellScreen(rowMax - row + offset.row, columnMax - col + offset.column)] =
-                                    gridMap.getValue(GridCellScreen(row, col))
-                            }
-                        }
-                        result.toMap()
+                    DirectionScreen.Down -> {
+                        transFunc = { r, c -> GridCellScreen(rowMax - r + offset.row, columnMax - c + offset.column) }
                     }
 
-                    Side.LEFT -> {
-                        for (row in rowProg) {
-                            for (col in columnProg) {
-                                result[GridCellScreen(columnMax - col + offset.column, row)] =
-                                    gridMap.getValue(GridCellScreen(row, col))
-                            }
-                        }
-                        result.toMap()
+                    DirectionScreen.Left -> {
+                        transFunc = { r, c -> GridCellScreen(columnMax - c + offset.column, r) }
                         newOffset = GridCellScreen(offset.column, offset.row)
                     }
                 }
+
+                for (row in rowProg) {
+                    for (column in columnProg) {
+                        result[transFunc(row, column)] = gridMap.getValue(GridCellScreen(row, column))
+                    }
+                }
+                result.toMap()
             }
 
-//            ORIENT_FLIPPED -> {
+            else -> error("Unknown orientation ${instructions.orient}")
+        }
+
+//            ORIENTATION.FLIPPED -> {
 //                when (instructions.rotate) {
-//                    Side.TOP -> {
+//                    DirectionScreen.Up -> {
 //                        rowProg = IntProgression.fromClosedRange(rowMax, rowMin, -1)
 //                        columnProg = IntProgression.fromClosedRange(columnMin, columnMax, 1)
 //                    }
 //
-//                    Side.RIGHT -> {
+//                    DirectionScreen.Right -> {
 //                        rowProg = IntProgression.fromClosedRange(rowMin, rowMax, 1)
 //                        columnProg = IntProgression.fromClosedRange(columnMin, columnMax, 1)
 //                    }
 //
-//                    Side.BOTTOM -> {
+//                    DirectionScreen.Down -> {
 //                        rowProg = IntProgression.fromClosedRange(rowMin, rowMax, 1)
 //                        columnProg = IntProgression.fromClosedRange(columnMax, columnMin, -1)
 //                    }
 //
-//                    Side.LEFT -> {
+//                    DirectionScreen.Left -> {
 //                        rowProg = IntProgression.fromClosedRange(rowMax, rowMin, -1)
 //                        columnProg = IntProgression.fromClosedRange(columnMax, columnMin, -1)
 //                    }
 //                }
 //            }
-
-            else -> error("Unknown orientation ${instructions.orient}")
-        }
+//
 
         return Grid(result.toMap(), newOffset)
     }
