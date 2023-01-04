@@ -136,6 +136,31 @@ val testCornerCells = mapOf(
     6 to Pair(GridCellScreen(9, 9), DirectionScreen.Up),
 )
 
+/*
+ * The input will be 'normalized' in a way that the top left corner of each side of the cube is at (0,0)
+ * and the plan for the cube is as follows, e.g. for a 4x4 cube:
+ *
+ *  +------------------------+
+ *  |                        |
+ *  |   +------------+       |
+ *  |   |            v       |
+ *  |   |    +--->5555<---+  |
+ *  |   |    |    5555    |  |
+ *  |   |    |    5555    |  |
+ *  |   |    |    5555    |  |
+ *  |   v    v            v  |
+ *  +-> 1111 2222 3333 4444<-+
+ *      1111 2222 3333 4444
+ *      1111 2222 3333 4444
+ *      1111 2222 3333 4444
+ *      ^    ^            ^
+ *      |    |    6666    |
+ *      |    |    6666    |
+ *      |    |    6666    |
+ *      |    +--->6666<---+
+ *      |            ^
+ *      +------------+
+ */
 val puzzleCornerCells = mapOf(
     1 to Pair(GridCellScreen(151, 1), DirectionScreen.Right),
     2 to Pair(GridCellScreen(101, 1), DirectionScreen.Right),
