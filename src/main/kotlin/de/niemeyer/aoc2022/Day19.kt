@@ -84,12 +84,11 @@ fun solution(prevState: State?, state: State): Int {
             add(state.buyGeodeRobot())
         } else {
             add(state)
-            add(state.couldBuyOreRobot(prevState))
-            add(state.couldBuyClayRobot(prevState))
-            add(state.couldBuyObsidianRobot(prevState))
+            state.buyOreRobotIfMeaningful(prevState)?.let { add(it) }
+            state.buyClayRobotIfMeaningful(prevState)?.let { add(it) }
+            state.buyObsidianRobotIfMeaningful(prevState)?.let { add(it) }
         }
-    }.filterNotNull()
-        .filter { it.isPossible }
+    }.filter { it.isPossible }
         .map { it.nextStep(state) }
         .maxOf { solution(state, it) }
 }
@@ -122,7 +121,7 @@ data class State(
                 numObsidianRobots == otherState.numObsidianRobots &&
                 numGeodeRobots == otherState.numGeodeRobots
 
-    fun couldBuyOreRobot(prevState: State?) =
+    fun buyOreRobotIfMeaningful(prevState: State?) =
         if (!(prevState?.canBuyOreRobot() == true && robotsEquality(prevState)) && shouldBuyOreRobot) {
             copy(
                 ore = ore - blueprint.oreRobotOreCost,
@@ -130,7 +129,7 @@ data class State(
             )
         } else null
 
-    fun couldBuyClayRobot(prevState: State?) =
+    fun buyClayRobotIfMeaningful(prevState: State?) =
         if (!(prevState?.canBuyClayRobot() == true && robotsEquality(prevState)) && shouldBuyClayRobot) {
             copy(
                 ore = ore - blueprint.clayRobotOreCost,
@@ -138,7 +137,7 @@ data class State(
             )
         } else null
 
-    fun couldBuyObsidianRobot(prevState: State?) =
+    fun buyObsidianRobotIfMeaningful(prevState: State?) =
         if (!(prevState?.canBuyObsidianRobot() == true && robotsEquality(prevState)) && shouldBuyObsidianRobot) {
             copy(
                 ore = ore - blueprint.obsidianRobotOreCost,
