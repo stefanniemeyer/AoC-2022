@@ -1,7 +1,8 @@
 package de.niemeyer.aoc.direction
 
 import de.niemeyer.aoc.points.Point2D
-import org.junit.jupiter.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -21,10 +22,10 @@ class DirectionCCSTest {
     @DisplayName("offset")
     fun getOffset() {
         assertAll(
-            { assertEquals(Point2D(0, 1), DirectionCCS.Up.offset) },
-            { assertEquals(Point2D(1, 0), DirectionCCS.Right.offset) },
-            { assertEquals(Point2D(0, -1), DirectionCCS.Down.offset) },
-            { assertEquals(Point2D(-1, 0), DirectionCCS.Left.offset) },
+            { assertThat(DirectionCCS.Up.offset).isEqualTo(Point2D(0, 1)) },
+            { assertThat(DirectionCCS.Right.offset).isEqualTo(Point2D(1, 0)) },
+            { assertThat(DirectionCCS.Down.offset).isEqualTo(Point2D(0, -1)) },
+            { assertThat(DirectionCCS.Left.offset).isEqualTo(Point2D(-1, 0)) },
         )
     }
 
@@ -36,7 +37,7 @@ class DirectionCCSTest {
                 val org = directions[it]
                 val next = directions[(directions.size + it - 1) % directions.size]
                 val left = org.turnLeft
-                assertEquals(next, left)
+                assertThat(left).isEqualTo(next)
             }
         }
     }
@@ -48,7 +49,7 @@ class DirectionCCSTest {
             val org = directions[it]
             val next = directions[(it + 1) % directions.size]
             val right = org.turnRight
-            assertEquals(next, right)
+            assertThat(right).isEqualTo(next)
         }
     }
 
@@ -56,7 +57,7 @@ class DirectionCCSTest {
     @DisplayName("DirectionCCS.toString")
     fun testToString() {
         directions.forEachIndexed { idx, direction ->
-            assertEquals(direction.toString(), directionString[idx].first().toString())
+            assertThat(direction.toString()).isEqualTo(directionString[idx].first().toString())
         }
     }
 
@@ -64,7 +65,7 @@ class DirectionCCSTest {
     @DisplayName("String.toDirectionCCS")
     fun testToDirectionCCS() {
         directionString.forEachIndexed { idx, direction ->
-            assertEquals(direction.toDirectionCCS(), directions[idx])
+            assertThat(direction.toDirectionCCS()).isEqualTo(directions[idx])
         }
     }
 
@@ -72,10 +73,10 @@ class DirectionCCSTest {
     @DisplayName("Char.arrowToDirectionCCS")
     fun charArrowToDirectionCCS() {
         listOf('^', '>', 'v', '<').forEachIndexed { idx, direction ->
-            assertEquals(direction.arrowToDirectionCCS(), directions[idx])
+            assertThat(direction.arrowToDirectionCCS()).isEqualTo(directions[idx])
         }
         DirectionCCS.ARROWS.forEachIndexed { idx, direction ->
-            assertEquals(direction.arrowToDirectionCCS(), directions[idx])
+            assertThat(direction.arrowToDirectionCCS()).isEqualTo(directions[idx])
         }
     }
 
@@ -83,7 +84,7 @@ class DirectionCCSTest {
     @DisplayName("String.arrowToDirectionCCS")
     fun stringArrowToDirectionCCS() {
         listOf("^", ">", "v", "<").forEachIndexed { idx, direction ->
-            assertEquals(direction.arrowToDirectionCCS(), directions[idx])
+            assertThat(direction.arrowToDirectionCCS()).isEqualTo(directions[idx])
         }
     }
 }

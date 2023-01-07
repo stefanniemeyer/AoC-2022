@@ -1,6 +1,7 @@
 package de.niemeyer.aoc.direction
 
 import de.niemeyer.aoc.points.Point2D
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -22,10 +23,10 @@ class DirectionScreenTest {
     @DisplayName("offset")
     fun getOffset() {
         assertAll(
-            { assertEquals(Point2D(0, -1), DirectionScreen.Up.offset) },
-            { assertEquals(Point2D(1, 0), DirectionScreen.Right.offset) },
-            { assertEquals(Point2D(0, 1), DirectionScreen.Down.offset) },
-            { assertEquals(Point2D(-1, 0), DirectionScreen.Left.offset) },
+            { assertThat(DirectionScreen.Up.offset).isEqualTo(Point2D(0, -1)) },
+            { assertThat(DirectionScreen.Right.offset).isEqualTo(Point2D(1, 0)) },
+            { assertThat(DirectionScreen.Down.offset).isEqualTo(Point2D(0, 1)) },
+            { assertThat(DirectionScreen.Left.offset).isEqualTo(Point2D(-1, 0)) },
         )
     }
 
@@ -37,7 +38,7 @@ class DirectionScreenTest {
                 val org = directions[it]
                 val next = directions[(directions.size + it - 1) % directions.size]
                 val left = org.turnLeft
-                assertEquals(next, left)
+                assertThat(left).isEqualTo(next)
             }
         }
     }
@@ -49,7 +50,7 @@ class DirectionScreenTest {
             val org = directions[it]
             val next = directions[(it + 1) % directions.size]
             val right = org.turnRight
-            assertEquals(next, right)
+            assertThat(right).isEqualTo(next)
         }
     }
 
@@ -57,7 +58,7 @@ class DirectionScreenTest {
     @DisplayName("DirectionScreen.toString")
     fun testToString() {
         directions.forEachIndexed { idx, direction ->
-            assertEquals(direction.toString(), directionString[idx].first().toString())
+            assertThat(direction.toString()).isEqualTo(directionString[idx].first().toString())
         }
     }
 
@@ -65,7 +66,7 @@ class DirectionScreenTest {
     @DisplayName("String.toDirectionScreen")
     fun testToDirectionScreen() {
         directionString.forEachIndexed { idx, direction ->
-            assertEquals(direction.toDirectionScreen(), directions[idx])
+            assertThat(direction.toDirectionScreen()).isEqualTo(directions[idx])
         }
     }
 
@@ -73,10 +74,10 @@ class DirectionScreenTest {
     @DisplayName("Char.arrowToDirectionScreen")
     fun charArrowToDirectionScreen() {
         listOf('^', '>', 'v', '<').forEachIndexed { idx, direction ->
-            assertEquals(direction.arrowToDirectionScreen(), directions[idx])
+            assertThat(direction.arrowToDirectionScreen()).isEqualTo(directions[idx])
         }
         DirectionScreen.ARROWS.forEachIndexed { idx, direction ->
-            assertEquals(direction.arrowToDirectionScreen(), directions[idx])
+            assertThat(direction.arrowToDirectionScreen()).isEqualTo(directions[idx])
         }
     }
 
@@ -84,7 +85,7 @@ class DirectionScreenTest {
     @DisplayName("String.arrowToDirectionScreen")
     fun stringArrowToDirectionScreen() {
         listOf("^", ">", "v", "<").forEachIndexed { idx, direction ->
-            assertEquals(direction.arrowToDirectionScreen(), directions[idx])
+            assertThat(direction.arrowToDirectionScreen()).isEqualTo(directions[idx])
         }
     }
 }

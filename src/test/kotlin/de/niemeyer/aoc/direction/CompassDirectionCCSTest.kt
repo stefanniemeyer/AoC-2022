@@ -1,7 +1,8 @@
 package de.niemeyer.aoc.direction
 
 import de.niemeyer.aoc.points.Point2D
-import org.junit.jupiter.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -25,14 +26,14 @@ class CompassDirectionCCSTest {
     @DisplayName("offset")
     fun getOffset() {
         assertAll(
-            { assertEquals(Point2D(0, 1), CompassDirectionCCS.North.offset) },
-            { assertEquals(Point2D(1, 1), CompassDirectionCCS.NorthEast.offset) },
-            { assertEquals(Point2D(1, 0), CompassDirectionCCS.East.offset) },
-            { assertEquals(Point2D(1, -1), CompassDirectionCCS.SouthEast.offset) },
-            { assertEquals(Point2D(0, -1), CompassDirectionCCS.South.offset) },
-            { assertEquals(Point2D(-1, -1), CompassDirectionCCS.SouthWest.offset) },
-            { assertEquals(Point2D(-1, 0), CompassDirectionCCS.West.offset) },
-            { assertEquals(Point2D(-1, 1), CompassDirectionCCS.NorthWest.offset) }
+            { assertThat(CompassDirectionCCS.North.offset).isEqualTo(Point2D(0, 1)) },
+            { assertThat(CompassDirectionCCS.NorthEast.offset).isEqualTo(Point2D(1, 1)) },
+            { assertThat(CompassDirectionCCS.East.offset).isEqualTo(Point2D(1, 0)) },
+            { assertThat(CompassDirectionCCS.SouthEast.offset).isEqualTo(Point2D(1, -1)) },
+            { assertThat(CompassDirectionCCS.South.offset).isEqualTo(Point2D(0, -1)) },
+            { assertThat(CompassDirectionCCS.SouthWest.offset).isEqualTo(Point2D(-1, -1)) },
+            { assertThat(CompassDirectionCCS.West.offset).isEqualTo(Point2D(-1, 0)) },
+            { assertThat(CompassDirectionCCS.NorthWest.offset).isEqualTo(Point2D(-1, 1)) },
         )
     }
 
@@ -41,7 +42,7 @@ class CompassDirectionCCSTest {
     fun getDegree() {
         val degrees = List(8) { it * 45 }
         degrees.forEachIndexed { idx, degree ->
-            assertEquals(degree, directions[idx].degree)
+            assertThat(directions[idx].degree).isEqualTo(degree)
         }
     }
 
@@ -50,7 +51,7 @@ class CompassDirectionCCSTest {
     fun testFromDegree() {
         val degrees = List(8) { it * 45 }
         degrees.forEach { degree ->
-            assertEquals(degree, CompassDirectionCCS.fromDegree(degree).degree)
+            assertThat(CompassDirectionCCS.fromDegree(degree).degree).isEqualTo(degree)
         }
     }
 
@@ -62,7 +63,7 @@ class CompassDirectionCCSTest {
                 val org = directions[it * 2]
                 val next = directions[(directions.size + (it - 1) * 2) % directions.size]
                 val left = org.turnLeft
-                assertEquals(next, left)
+                assertThat(left).isEqualTo(next)
             }
         }
     }
@@ -74,7 +75,7 @@ class CompassDirectionCCSTest {
             val org = directions[it * 2]
             val next = directions[((it + 1) * 2) % directions.size]
             val right = org.turnRight
-            assertEquals(next, right)
+            assertThat(right).isEqualTo(next)
         }
     }
 
@@ -86,7 +87,8 @@ class CompassDirectionCCSTest {
                 val org = directions[it]
                 val next = directions[(directions.size + it - 1) % directions.size]
                 val halfLeft = org.turnHalfLeft
-                assertEquals(next, halfLeft)
+                assertThat(halfLeft).isEqualTo(next)
+
             }
         }
     }
@@ -99,7 +101,8 @@ class CompassDirectionCCSTest {
                 val org = directions[it]
                 val next = directions[(directions.size + it + 1) % directions.size]
                 val halfRight = org.turnHalfRight
-                assertEquals(next, halfRight)
+                assertThat(halfRight).isEqualTo(next)
+
             }
         }
     }
@@ -108,7 +111,7 @@ class CompassDirectionCCSTest {
     @DisplayName("CompassDirectionCCS.toString")
     fun testToString() {
         directions.forEachIndexed { idx, direction ->
-            assertEquals(direction.toString(), directionString[idx])
+            assertThat(direction.toString()).isEqualTo(directionString[idx])
         }
     }
 
@@ -116,7 +119,7 @@ class CompassDirectionCCSTest {
     @DisplayName("String.toCompassDirectionCCS")
     fun testToCompassDirectionCCS() {
         directionString.forEachIndexed { idx, direction ->
-            assertEquals(direction.toCompassDirectionCCS(), directions[idx])
+            assertThat(direction.toCompassDirectionCCS()).isEqualTo(directions[idx])
         }
     }
 }

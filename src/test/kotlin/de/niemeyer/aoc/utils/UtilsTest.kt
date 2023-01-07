@@ -1,8 +1,7 @@
 package de.niemeyer.aoc.utils
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 
@@ -18,7 +17,7 @@ class UtilsTest {
             "5caa9f8c9c656b88039d573bd417cef1" to "()[]{}<>",
         )
         testcases.forEach { (k, v) ->
-            assertEquals(k, v.md5())
+            assertThat(v.md5()).isEqualTo(k)
         }
     }
 
@@ -27,7 +26,7 @@ class UtilsTest {
         @Test
         @DisplayName("getClassName")
         fun testGetClassName() {
-            assertEquals("UtilsTest\$Day99Test", getClassName())
+            assertThat(getClassName()).isEqualTo("UtilsTest\$Day99Test")
         }
     }
 
@@ -43,7 +42,7 @@ class UtilsTest {
             32 to Pair(128, 96),
         )
         testcases.forEach { (k, v) ->
-            assertEquals(k, v.first.gcd(v.second))
+            assertThat(v.first.gcd(v.second)).isEqualTo(k)
         }
     }
 
@@ -57,7 +56,7 @@ class UtilsTest {
             10_283 to Pair(13, 791),
         )
         testcases.forEach { (k, v) ->
-            assertEquals(k, v.first.lcm(v.second))
+            assertThat(v.first.lcm(v.second)).isEqualTo(k)
         }
     }
 }

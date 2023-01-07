@@ -1,6 +1,6 @@
 package de.niemeyer.aoc.points
 
-import org.junit.jupiter.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -27,8 +27,8 @@ class ParsingTest {
             Point2D(3, 2),
             Point2D(7, 2),
         )
-        assertEquals(correct.size, tl.size)
-        assertEquals(correct, tl)
+        assertThat(tl.size).isEqualTo(correct.size)
+        assertThat(tl).isEqualTo(correct)
     }
 
     @Test
@@ -47,7 +47,7 @@ class ParsingTest {
             Point2D(7, 2),
             Point2D(8, 2),
         )
-        assertEquals(correct.size, tl.size)
-        assertEquals(correct, tl)
+        assertThat(tl.size).isEqualTo(correct.size)
+        assertThat(tl).isEqualTo(correct)
     }
 }

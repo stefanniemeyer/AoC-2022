@@ -1,7 +1,8 @@
 package de.niemeyer.aoc.direction
 
 import de.niemeyer.aoc.points.Point2D
-import org.junit.jupiter.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -24,15 +25,15 @@ class CompassDirectionScreenTest {
     @Test
     @DisplayName("offset")
     fun getOffset() {
-        Assertions.assertAll(
-            { Assertions.assertEquals(Point2D(0, -1), CompassDirectionScreen.North.offset) },
-            { Assertions.assertEquals(Point2D(1, -1), CompassDirectionScreen.NorthEast.offset) },
-            { Assertions.assertEquals(Point2D(1, 0), CompassDirectionScreen.East.offset) },
-            { Assertions.assertEquals(Point2D(1, 1), CompassDirectionScreen.SouthEast.offset) },
-            { Assertions.assertEquals(Point2D(0, 1), CompassDirectionScreen.South.offset) },
-            { Assertions.assertEquals(Point2D(-1, 1), CompassDirectionScreen.SouthWest.offset) },
-            { Assertions.assertEquals(Point2D(-1, 0), CompassDirectionScreen.West.offset) },
-            { Assertions.assertEquals(Point2D(-1, -1), CompassDirectionScreen.NorthWest.offset) }
+        assertAll(
+            { assertThat(CompassDirectionScreen.North.offset).isEqualTo(Point2D(0, -1)) },
+            { assertThat(CompassDirectionScreen.NorthEast.offset).isEqualTo(Point2D(1, -1)) },
+            { assertThat(CompassDirectionScreen.East.offset).isEqualTo(Point2D(1, 0)) },
+            { assertThat(CompassDirectionScreen.SouthEast.offset).isEqualTo(Point2D(1, 1)) },
+            { assertThat(CompassDirectionScreen.South.offset).isEqualTo(Point2D(0, 1)) },
+            { assertThat(CompassDirectionScreen.SouthWest.offset).isEqualTo(Point2D(-1, 1)) },
+            { assertThat(CompassDirectionScreen.West.offset).isEqualTo(Point2D(-1, 0)) },
+            { assertThat(CompassDirectionScreen.NorthWest.offset).isEqualTo(Point2D(-1, -1)) },
         )
     }
 
@@ -41,7 +42,7 @@ class CompassDirectionScreenTest {
     fun getDegree() {
         val degrees = List(8) { it * 45 }
         degrees.forEachIndexed { idx, degree ->
-            Assertions.assertEquals(degree, directions[idx].degree)
+            assertThat(directions[idx].degree).isEqualTo(degree)
         }
     }
 
@@ -50,7 +51,7 @@ class CompassDirectionScreenTest {
     fun testFromDegree() {
         val degrees = List(8) { it * 45 }
         degrees.forEach { degree ->
-            Assertions.assertEquals(degree, CompassDirectionScreen.fromDegree(degree).degree)
+            assertThat(CompassDirectionScreen.fromDegree(degree).degree).isEqualTo(degree)
         }
     }
 
@@ -62,7 +63,7 @@ class CompassDirectionScreenTest {
                 val org = directions[it * 2]
                 val next = directions[(directions.size + (it - 1) * 2) % directions.size]
                 val left = org.turnLeft
-                Assertions.assertEquals(next, left)
+                assertThat(left).isEqualTo(next)
             }
         }
     }
@@ -74,7 +75,7 @@ class CompassDirectionScreenTest {
             val org = directions[it * 2]
             val next = directions[((it + 1) * 2) % directions.size]
             val right = org.turnRight
-            Assertions.assertEquals(next, right)
+            assertThat(right).isEqualTo(next)
         }
     }
 
@@ -86,7 +87,7 @@ class CompassDirectionScreenTest {
                 val org = directions[it]
                 val next = directions[(directions.size + it - 1) % directions.size]
                 val halfLeft = org.turnHalfLeft
-                Assertions.assertEquals(next, halfLeft)
+                assertThat(halfLeft).isEqualTo(next)
             }
         }
     }
@@ -99,7 +100,7 @@ class CompassDirectionScreenTest {
                 val org = directions[it]
                 val next = directions[(directions.size + it + 1) % directions.size]
                 val halfRight = org.turnHalfRight
-                Assertions.assertEquals(next, halfRight)
+                assertThat(halfRight).isEqualTo(next)
             }
         }
     }
@@ -108,7 +109,7 @@ class CompassDirectionScreenTest {
     @DisplayName("CompassDirectionScreen.toString")
     fun testToString() {
         directions.forEachIndexed { idx, direction ->
-            Assertions.assertEquals(direction.toString(), directionString[idx])
+            assertThat(direction.toString()).isEqualTo(directionString[idx])
         }
     }
 
@@ -116,7 +117,7 @@ class CompassDirectionScreenTest {
     @DisplayName("String.toCompassDirectionScreen")
     fun testToCompassDirectionScreen() {
         directionString.forEachIndexed { idx, direction ->
-            Assertions.assertEquals(direction.toCompassDirectionScreen(), directions[idx])
+            assertThat(direction.toCompassDirectionScreen()).isEqualTo(directions[idx])
         }
     }
 }

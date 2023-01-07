@@ -1,7 +1,7 @@
 package de.niemeyer.aoc.grid
 
 import de.niemeyer.aoc.direction.DirectionScreen
-import org.junit.jupiter.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -17,28 +17,24 @@ class GridCellScreenTest {
         val ps = listOf(GridCellScreen(3, 7), GridCellScreen(-3, 7), GridCellScreen(-3, -7), GridCellScreen(3, -7))
         ps.forEach { p ->
             val correct = offsets.map { it + p }.toSet()
-            assertEquals(correct, p.neighbors.toSet())
+            assertThat(p.neighbors.toSet()).isEqualTo(correct)
         }
     }
 
     @Test
     @DisplayName("axisNeighbors")
     fun getAxisNeighbors() {
-        assertEquals(
-            setOf(GridCellScreen(2, 7), GridCellScreen(3, 6), GridCellScreen(4, 7), GridCellScreen(3, 8)),
-            GridCellScreen(3, 7).axisNeighbors.toSet()
+        assertThat(GridCellScreen(3, 7).axisNeighbors.toSet()).isEqualTo(
+            setOf(GridCellScreen(2, 7), GridCellScreen(3, 6), GridCellScreen(4, 7), GridCellScreen(3, 8))
         )
-        assertEquals(
-            setOf(GridCellScreen(-2, 7), GridCellScreen(-3, 6), GridCellScreen(-4, 7), GridCellScreen(-3, 8)),
-            GridCellScreen(-3, 7).axisNeighbors.toSet()
+        assertThat(GridCellScreen(-3, 7).axisNeighbors.toSet()).isEqualTo(
+            setOf(GridCellScreen(-2, 7), GridCellScreen(-3, 6), GridCellScreen(-4, 7), GridCellScreen(-3, 8))
         )
-        assertEquals(
-            setOf(GridCellScreen(-2, -7), GridCellScreen(-3, -6), GridCellScreen(-4, -7), GridCellScreen(-3, -8)),
-            GridCellScreen(-3, -7).axisNeighbors.toSet()
+        assertThat(GridCellScreen(-3, -7).axisNeighbors.toSet()).isEqualTo(
+            setOf(GridCellScreen(-2, -7), GridCellScreen(-3, -6), GridCellScreen(-4, -7), GridCellScreen(-3, -8))
         )
-        assertEquals(
-            setOf(GridCellScreen(2, -7), GridCellScreen(3, -6), GridCellScreen(4, -7), GridCellScreen(3, -8)),
-            GridCellScreen(3, -7).axisNeighbors.toSet()
+        assertThat(GridCellScreen(3, -7).axisNeighbors.toSet()).isEqualTo(
+            setOf(GridCellScreen(2, -7), GridCellScreen(3, -6), GridCellScreen(4, -7), GridCellScreen(3, -8))
         )
     }
 
@@ -47,26 +43,26 @@ class GridCellScreenTest {
     fun testSharesAxisWith() {
         assert(GridCellScreen(3, 7) sharesAxisWith GridCellScreen(3, 2))
         assert(GridCellScreen(3, 7) sharesAxisWith GridCellScreen(1, 7))
-        assertEquals(false, GridCellScreen(3, 7) sharesAxisWith GridCellScreen(-3, 2))
-        assertEquals(false, GridCellScreen(3, 7) sharesAxisWith GridCellScreen(1, -7))
+        assertThat(GridCellScreen(3, 7) sharesAxisWith GridCellScreen(-3, 2)).isEqualTo(false)
+        assertThat(GridCellScreen(3, 7) sharesAxisWith GridCellScreen(1, -7)).isEqualTo(false)
     }
 
     @Test
     @DisplayName("plus")
     fun testPlus() {
-        assertEquals(GridCellScreen(4, 9), GridCellScreen(3, 7) + GridCellScreen(1, 2))
-        assertEquals(GridCellScreen(-6, 9), GridCellScreen(3, 7) + GridCellScreen(-9, 2))
-        assertEquals(GridCellScreen(-2, -4), GridCellScreen(3, 7) + GridCellScreen(-5, -11))
-        assertEquals(GridCellScreen(2, -8), GridCellScreen(3, 7) + GridCellScreen(-1, -15))
+        assertThat(GridCellScreen(3, 7) + GridCellScreen(1, 2)).isEqualTo(GridCellScreen(4, 9))
+        assertThat(GridCellScreen(3, 7) + GridCellScreen(-9, 2)).isEqualTo(GridCellScreen(-6, 9))
+        assertThat(GridCellScreen(3, 7) + GridCellScreen(-5, -11)).isEqualTo(GridCellScreen(-2, -4))
+        assertThat(GridCellScreen(3, 7) + GridCellScreen(-1, -15)).isEqualTo(GridCellScreen(2, -8))
     }
 
     @Test
     @DisplayName("times")
     fun testTimes() {
-        assertEquals(GridCellScreen(15, 35), GridCellScreen(3, 7) * 5)
-        assertEquals(GridCellScreen(-15, 35), GridCellScreen(-3, 7) * 5)
-        assertEquals(GridCellScreen(-15, -35), GridCellScreen(-3, -7) * 5)
-        assertEquals(GridCellScreen(15, -35), GridCellScreen(3, -7) * 5)
+        assertThat(GridCellScreen(3, 7) * 5).isEqualTo(GridCellScreen(15, 35))
+        assertThat(GridCellScreen(-3, 7) * 5).isEqualTo(GridCellScreen(-15, 35))
+        assertThat(GridCellScreen(-3, -7) * 5).isEqualTo(GridCellScreen(-15, -35))
+        assertThat(GridCellScreen(3, -7) * 5).isEqualTo(GridCellScreen(15, -35))
     }
 
     val directionScreen = listOf(
@@ -94,7 +90,7 @@ class GridCellScreenTest {
         )
         offsets.zip(directionScreen).forEach { (offset, dir) ->
             ps.forEach { p ->
-                assertEquals(p + offset, p.move(dir))
+                assertThat(p.move(dir)).isEqualTo(p + offset)
             }
         }
     }
@@ -110,7 +106,7 @@ class GridCellScreenTest {
         )
         offsets.zip(directionScreen).forEach { (offset, dir) ->
             ps.forEach { p ->
-                assertEquals(p + (offset * 3), p.moveTimes(dir, 3))
+                assertThat(p.moveTimes(dir, 3)).isEqualTo(p + (offset * 3))
             }
         }
     }
@@ -123,14 +119,14 @@ class GridCellScreenTest {
             GridCellScreen(5, 3),
             GridCellScreen(5, 4),
         )
-        assertEquals(wayHorizontal, GridCellScreen(5, 2) lineTo GridCellScreen(5, 4))
+        assertThat(GridCellScreen(5, 2) lineTo GridCellScreen(5, 4)).isEqualTo(wayHorizontal)
 
         val wayVertical = listOf(
             GridCellScreen(2, 1),
             GridCellScreen(3, 1),
             GridCellScreen(4, 1),
         )
-        assertEquals(wayVertical, GridCellScreen(2, 1) lineTo GridCellScreen(4, 1))
+        assertThat(GridCellScreen(2, 1) lineTo GridCellScreen(4, 1)).isEqualTo(wayVertical)
 
         val wayDiagonal = listOf(
             GridCellScreen(-1, -2),
@@ -138,35 +134,35 @@ class GridCellScreenTest {
             GridCellScreen(1, 0),
             GridCellScreen(2, 1)
         )
-        assertEquals(wayDiagonal, GridCellScreen(-1, -2) lineTo GridCellScreen(2, 1))
+        assertThat(GridCellScreen(-1, -2) lineTo GridCellScreen(2, 1)).isEqualTo(wayDiagonal)
     }
 
     @Test
     @DisplayName("manhattanDistanceTo")
     fun testManhattanDistanceTo() {
-        assertEquals(2, GridCellScreen(1, 1).manhattanDistanceTo(GridCellScreen(2, 2)))
-        assertEquals(12, GridCellScreen(3, 7).manhattanDistanceTo(GridCellScreen(9, 13)))
-        assertEquals(18, GridCellScreen(3, 7).manhattanDistanceTo(GridCellScreen(-9, 13)))
-        assertEquals(32, GridCellScreen(3, 7).manhattanDistanceTo(GridCellScreen(-9, -13)))
-        assertEquals(26, GridCellScreen(3, 7).manhattanDistanceTo(GridCellScreen(9, -13)))
+        assertThat(GridCellScreen(1, 1).manhattanDistanceTo(GridCellScreen(2, 2))).isEqualTo(2)
+        assertThat(GridCellScreen(3, 7).manhattanDistanceTo(GridCellScreen(9, 13))).isEqualTo(12)
+        assertThat(GridCellScreen(3, 7).manhattanDistanceTo(GridCellScreen(-9, 13))).isEqualTo(18)
+        assertThat(GridCellScreen(3, 7).manhattanDistanceTo(GridCellScreen(-9, -13))).isEqualTo(32)
+        assertThat(GridCellScreen(3, 7).manhattanDistanceTo(GridCellScreen(9, -13))).isEqualTo(26)
     }
 
     @Test
     @DisplayName("chebyshevDistanceTo")
     fun testChebyshevDistanceTo() {
-        assertEquals(1, GridCellScreen(1, 1).chebyshevDistanceTo(GridCellScreen(2, 2)))
-        assertEquals(6, GridCellScreen(3, 7).chebyshevDistanceTo(GridCellScreen(9, 13)))
-        assertEquals(12, GridCellScreen(3, 7).chebyshevDistanceTo(GridCellScreen(-9, 13)))
-        assertEquals(20, GridCellScreen(3, 7).chebyshevDistanceTo(GridCellScreen(-9, -13)))
-        assertEquals(20, GridCellScreen(3, 7).chebyshevDistanceTo(GridCellScreen(9, -13)))
+        assertThat(GridCellScreen(1, 1).chebyshevDistanceTo(GridCellScreen(2, 2))).isEqualTo(1)
+        assertThat(GridCellScreen(3, 7).chebyshevDistanceTo(GridCellScreen(9, 13))).isEqualTo(6)
+        assertThat(GridCellScreen(3, 7).chebyshevDistanceTo(GridCellScreen(-9, 13))).isEqualTo(12)
+        assertThat(GridCellScreen(3, 7).chebyshevDistanceTo(GridCellScreen(-9, -13))).isEqualTo(20)
+        assertThat(GridCellScreen(3, 7).chebyshevDistanceTo(GridCellScreen(9, -13))).isEqualTo(20)
     }
 
     @Test
     @DisplayName("GridCellScreen.of")
     fun testOf() {
-        assertEquals(GridCellScreen(1, 2), GridCellScreen.of("1,2"))
-        assertEquals(GridCellScreen(-3, 5), GridCellScreen.of("-3,5"))
-        assertEquals(GridCellScreen(-7, -3), GridCellScreen.of("-7 -3", delimiter = " "))
-        assertEquals(GridCellScreen(9, -17), GridCellScreen.of("9:-17", delimiter = ":"))
+        assertThat(GridCellScreen.of("1,2")).isEqualTo(GridCellScreen(1, 2))
+        assertThat(GridCellScreen.of("-3,5")).isEqualTo(GridCellScreen(-3, 5))
+        assertThat(GridCellScreen.of("-7 -3", delimiter = " ")).isEqualTo(GridCellScreen(-7, -3))
+        assertThat(GridCellScreen.of("9:-17", delimiter = ":")).isEqualTo(GridCellScreen(9, -17))
     }
 }

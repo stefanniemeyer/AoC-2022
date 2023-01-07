@@ -1,9 +1,8 @@
 package de.niemeyer.aoc.grid
 
 import de.niemeyer.aoc.direction.DirectionScreen
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 
@@ -65,9 +64,9 @@ class GridTest {
         @DisplayName("rotate top")
         fun testRotateTop() {
             val res = gq1.rotate(TileInstructions(DirectionScreen.Up))
-            assertEquals(gq1.gridMap.keys.size, res.gridMap.keys.size)
-            assertEquals(gq1.offset.row, res.offset.row)
-            assertEquals(gq1.offset.column, res.offset.column)
+            assertThat(res.gridMap.keys.size).isEqualTo(gq1.gridMap.keys.size)
+            assertThat(res.offset.row).isEqualTo(gq1.offset.row)
+            assertThat(res.offset.column).isEqualTo(gq1.offset.column)
             assert(gq1.gridMap.keys.containsAll(res.gridMap.keys))
             val transposed = listOf(
                 GridCellScreen(0, 0) to GridCellScreen(0, 0),
@@ -76,13 +75,13 @@ class GridTest {
                 GridCellScreen(6, 7) to GridCellScreen(6, 7),
             )
             transposed.forEach { (org, newPos) ->
-                assertEquals(org, res.gridMap.getValue(newPos).original)
+                assertThat(res.gridMap.getValue(newPos).original).isEqualTo(org)
             }
 
             val resAt35 = gq1at35.rotate(TileInstructions(DirectionScreen.Up))
-            assertEquals(gq1at35.gridMap.keys.size, resAt35.gridMap.keys.size)
-            assertEquals(gq1at35.offset.row, resAt35.offset.row)
-            assertEquals(gq1at35.offset.column, resAt35.offset.column)
+            assertThat(resAt35.gridMap.keys.size).isEqualTo(gq1at35.gridMap.keys.size)
+            assertThat(resAt35.offset.row).isEqualTo(gq1at35.offset.row)
+            assertThat(resAt35.offset.column).isEqualTo(gq1at35.offset.column)
             assert(gq1at35.gridMap.keys.containsAll(resAt35.gridMap.keys))
         }
 
@@ -90,9 +89,9 @@ class GridTest {
         @DisplayName("rotate right")
         fun testRotateRight() {
             val res = gq1.rotate(TileInstructions(DirectionScreen.Right))
-            assertEquals(gq4.gridMap.keys.size, res.gridMap.keys.size)
-            assertEquals(gq4.offset.row, res.offset.row)
-            assertEquals(gq4.offset.column, res.offset.column)
+            assertThat(res.gridMap.keys.size).isEqualTo(gq4.gridMap.keys.size)
+            assertThat(res.offset.row).isEqualTo(gq4.offset.row)
+            assertThat(res.offset.column).isEqualTo(gq4.offset.column)
             assert(gq4.gridMap.keys.containsAll(res.gridMap.keys))
             val transposed = listOf(
                 GridCellScreen(0, 0) to GridCellScreen(0, 6),
@@ -101,13 +100,13 @@ class GridTest {
                 GridCellScreen(6, 7) to GridCellScreen(7, 0),
             )
             transposed.forEach { (org, newPos) ->
-                assertEquals(org, res.gridMap.getValue(newPos).original)
+                assertThat(res.gridMap.getValue(newPos).original).isEqualTo(org)
             }
 
             val resAt53 = gq1at35.rotate(TileInstructions(DirectionScreen.Right))
-            assertEquals(gq4at53.gridMap.keys.size, resAt53.gridMap.keys.size)
-            assertEquals(gq4at53.offset.row, resAt53.offset.row)
-            assertEquals(gq4at53.offset.column, resAt53.offset.column)
+            assertThat(resAt53.gridMap.keys.size).isEqualTo(gq4at53.gridMap.keys.size)
+            assertThat(resAt53.offset.row).isEqualTo(gq4at53.offset.row)
+            assertThat(resAt53.offset.column).isEqualTo(gq4at53.offset.column)
             assert(gq4at53.gridMap.keys.containsAll(resAt53.gridMap.keys))
         }
 
@@ -115,9 +114,9 @@ class GridTest {
         @DisplayName("rotate bottom")
         fun testRotateBottom() {
             val res = gq1.rotate(TileInstructions(DirectionScreen.Down))
-            assertEquals(gq3.gridMap.keys.size, res.gridMap.keys.size)
-            assertEquals(gq3.offset.row, res.offset.row)
-            assertEquals(gq3.offset.column, res.offset.column)
+            assertThat(res.gridMap.keys.size).isEqualTo(gq3.gridMap.keys.size)
+            assertThat(res.offset.row).isEqualTo(gq3.offset.row)
+            assertThat(res.offset.column).isEqualTo(gq3.offset.column)
             assert(gq3.gridMap.keys.containsAll(res.gridMap.keys))
             val transposed = listOf(
                 GridCellScreen(0, 0) to GridCellScreen(6, 7),
@@ -126,13 +125,13 @@ class GridTest {
                 GridCellScreen(6, 7) to GridCellScreen(0, 0),
             )
             transposed.forEach { (org, newPos) ->
-                assertEquals(org, res.gridMap.getValue(newPos).original)
+                assertThat(res.gridMap.getValue(newPos).original).isEqualTo(org)
             }
 
             val resAt35 = gq1at35.rotate(TileInstructions(DirectionScreen.Down))
-            assertEquals(gq3at35.gridMap.keys.size, resAt35.gridMap.keys.size)
-            assertEquals(gq3at35.offset.row, resAt35.offset.row)
-            assertEquals(gq3at35.offset.column, resAt35.offset.column)
+            assertThat(resAt35.gridMap.keys.size).isEqualTo(gq3at35.gridMap.keys.size)
+            assertThat(resAt35.offset.row).isEqualTo(gq3at35.offset.row)
+            assertThat(resAt35.offset.column).isEqualTo(gq3at35.offset.column)
             assert(gq3at35.gridMap.keys.containsAll(resAt35.gridMap.keys))
         }
 
@@ -140,9 +139,9 @@ class GridTest {
         @DisplayName("rotate left")
         fun testRotateLeft() {
             val res = gq1.rotate(TileInstructions(DirectionScreen.Left))
-            assertEquals(gq2.gridMap.keys.size, res.gridMap.keys.size)
-            assertEquals(gq2.offset.row, res.offset.row)
-            assertEquals(gq2.offset.column, res.offset.column)
+            assertThat(res.gridMap.keys.size).isEqualTo(gq2.gridMap.keys.size)
+            assertThat(res.offset.row).isEqualTo(gq2.offset.row)
+            assertThat(res.offset.column).isEqualTo(gq2.offset.column)
             assert(gq2.gridMap.keys.containsAll(res.gridMap.keys))
             val transposed = listOf(
                 GridCellScreen(0, 0) to GridCellScreen(7, 0),
@@ -151,13 +150,13 @@ class GridTest {
                 GridCellScreen(6, 7) to GridCellScreen(0, 6),
             )
             transposed.forEach { (org, newPos) ->
-                assertEquals(org, res.gridMap.getValue(newPos).original)
+                assertThat(res.gridMap.getValue(newPos).original).isEqualTo(org)
             }
 
             val resAt53 = gq1at35.rotate(TileInstructions(DirectionScreen.Left))
-            assertEquals(gq2at53.gridMap.keys.size, resAt53.gridMap.keys.size)
-            assertEquals(gq2at53.offset.row, resAt53.offset.row)
-            assertEquals(gq2at53.offset.column, resAt53.offset.column)
+            assertThat(resAt53.gridMap.keys.size).isEqualTo(gq2at53.gridMap.keys.size)
+            assertThat(resAt53.offset.row).isEqualTo(gq2at53.offset.row)
+            assertThat(resAt53.offset.column).isEqualTo(gq2at53.offset.column)
             assert(gq2at53.gridMap.keys.containsAll(resAt53.gridMap.keys))
         }
     }
@@ -179,7 +178,7 @@ class GridTest {
             0..6,
         )
         gq.columnRangesForRows.forEach { (row, range) ->
-            assertEquals(correct[row], range)
+            assertThat(range).isEqualTo(correct[row])
         }
     }
 
@@ -196,7 +195,7 @@ class GridTest {
             2..2,
         )
         gq.rowRangesForColumns.forEach { (column, range) ->
-            assertEquals(correct[column], range)
+            assertThat(range).isEqualTo(correct[column])
         }
     }
 
@@ -211,7 +210,7 @@ class GridTest {
         ).joinToString("\n")
         val gpne = Grid.of(qne)
         val res = gpne.toPrintableStringExisting()
-        assertEquals(qne, res)
+        assertThat(res).isEqualTo(qne)
     }
 
     @Test
@@ -222,12 +221,11 @@ class GridTest {
             GridCellScreen(2, 4) to GridCellContainer(true),
         )
         val res = Grid(mv).toPrintableStringWithDefault()
-        assertEquals(
+        assertThat(res).isEqualTo(
             listOf(
                 "#..",
                 "..#",
             ).joinToString("\n"),
-            res
         )
     }
 }

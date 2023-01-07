@@ -1,8 +1,7 @@
 package de.niemeyer.aoc.utils
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 
 class ExtensionsKtTest {
@@ -10,66 +9,66 @@ class ExtensionsKtTest {
     @Test
     @DisplayName("next")
     fun testNext() {
-        assertEquals("abcde", "abcdefghij".iterator().next(5))
+        assertThat("abcdefghij".iterator().next(5)).isEqualTo("abcde")
     }
 
     @Test
     @DisplayName("nextInt")
     fun testNextInt() {
-        assertEquals(9, "10011111".iterator().nextInt(4))
+        assertThat("10011111".iterator().nextInt(4)).isEqualTo(9)
     }
 
     @Test
     @DisplayName("nextUntilFirst")
     fun testNextUntilFirst() {
         val res = "abcdefghij".iterator().nextUntilFirst(3) { it == "def" }
-        assertEquals(listOf("abc", "def"), res)
+        assertThat(res).isEqualTo(listOf("abc", "def"))
     }
 
     @Test
     @DisplayName("executeUntilEmpty")
     fun testExecuteUntilEmpty() {
         val res = "abcdef".iterator().executeUntilEmpty { it.next() < 'c' }
-        assertEquals(listOf(true, true, false, false, false, false), res)
+        assertThat(res).isEqualTo(listOf(true, true, false, false, false, false))
     }
 
     @Test
     @DisplayName("takeUntil")
     fun testTakeUntil() {
         val res = "abcdefghij".asIterable().takeUntil { it == 'c' }
-        assertEquals(listOf('a', 'b', 'c'), res)
+        assertThat(res).isEqualTo(listOf('a', 'b', 'c'))
     }
 
     @Test
     @DisplayName("pairs")
     fun testPairs() {
         val res = listOf(1, 2, 3).pairs()
-        assertEquals(listOf(Pair(1, 1), Pair(1, 2), Pair(1, 3), Pair(2, 2), Pair(2, 3), Pair(3, 3)), res)
+        assertThat(res).isEqualTo(listOf(Pair(1, 1), Pair(1, 2), Pair(1, 3), Pair(2, 2), Pair(2, 3), Pair(3, 3)))
     }
 
     @Test
     @DisplayName("Int.product")
     fun testIntProduct() {
-        assertEquals(6, listOf(1, 2, 3).product())
-        assertEquals(-30, listOf(2, -3, 5).product())
-        assertEquals(0, listOf(2, 0, 5).product())
+        assertThat(listOf(1, 2, 3).product()).isEqualTo(6)
+        assertThat(listOf(2, -3, 5).product()).isEqualTo(-30)
+        assertThat(listOf(2, 0, 5).product()).isEqualTo(0)
     }
 
     @Test
     @DisplayName("Long.product")
     fun testLongProduct() {
-        assertEquals(6L, listOf(1L, 2L, 3L).product())
-        assertEquals(-30L, listOf(2L, -3L, 5L).product())
-        assertEquals(0L, listOf(2L, 0L, 5L).product())
+        assertThat(listOf(1L, 2L, 3L).product()).isEqualTo(6L)
+        assertThat(listOf(2L, -3L, 5L).product()).isEqualTo(-30L)
+        assertThat(listOf(2L, 0L, 5L).product()).isEqualTo(0L)
     }
 
     @Test
     @DisplayName("asLong")
     fun testAsLong() {
-        assertEquals('0'.asLong(), 0L)
-        assertEquals('1'.asLong(), 1L)
-        assertEquals('2'.asLong(), 2L)
-        assertEquals('9'.asLong(), 9L)
+        assertThat('0'.asLong()).isEqualTo(0L)
+        assertThat('1'.asLong()).isEqualTo(1L)
+        assertThat('2'.asLong()).isEqualTo(2L)
+        assertThat('9'.asLong()).isEqualTo(9L)
     }
 
     @Test
@@ -80,9 +79,9 @@ class ExtensionsKtTest {
             "12345".toCharArray(),
             "ABCDE".toCharArray(),
         )
-        assertEquals(0 to 3, a.peer(1, 1, 2, 2))
-        assertEquals(1 to 2, a.peer(2, 4, 11, 13))
-        assertEquals(2 to 4, a.peer(1, 2, 1, 2))
+        assertThat(a.peer(1, 1, 2, 2)).isEqualTo(0 to 3)
+        assertThat(a.peer(2, 4, 11, 13)).isEqualTo(1 to 2)
+        assertThat(a.peer(1, 2, 1, 2)).isEqualTo(2 to 4)
     }
 
     @Test
@@ -91,34 +90,34 @@ class ExtensionsKtTest {
         assert(0..10 intersects 5..15)
         assert(0..10 intersects 10..15)
         assert(10..15 intersects 5..10)
-        assertEquals(false, 0..9 intersects 10..15)
+        assertThat(0..9 intersects 10..15).isEqualTo(false)
         assert(5..15 intersects 0..10)
-        assertEquals(false, 10..15 intersects 0..9)
-        assertEquals(false, -5..-1 intersects 0..5)
+        assertThat(10..15 intersects 0..9).isEqualTo(false)
+        assertThat(-5..-1 intersects 0..5).isEqualTo(false)
     }
 
     @Test
     @DisplayName("intersect")
     fun testIntersect() {
-        assertEquals(5..10, 0..10 intersect 5..15)
-        assertEquals(10..10, 0..10 intersect 10..15)
-        assertEquals(10..10, 10..15 intersect 5..10)
-        assertEquals(IntRange.EMPTY, -5..-1 intersect 0..5)
+        assertThat(0..10 intersect 5..15).isEqualTo(5..10)
+        assertThat(0..10 intersect 10..15).isEqualTo(10..10)
+        assertThat(10..15 intersect 5..10).isEqualTo(10..10)
+        assertThat(-5..-1 intersect 0..5).isEqualTo(IntRange.EMPTY)
     }
 
     @Test
     @DisplayName("union")
     fun testUnion() {
-        assertEquals(0..15, 0..10 union 5..15)
-        assertEquals(-5..15, 10..15 union -5..-3)
+        assertThat(0..10 union 5..15).isEqualTo(0..15)
+        assertThat(10..15 union -5..-3).isEqualTo(-5..15)
     }
 
     @Test
     @DisplayName("size")
     fun testSize() {
-        assertEquals(11, (0..10).size())
-        assertEquals(3, (-5..-3).size())
-        assertEquals(1, (99..99).size())
-        assertEquals(0, (IntRange.EMPTY).size())
+        assertThat((0..10).size()).isEqualTo(11)
+        assertThat((-5..-3).size()).isEqualTo(3)
+        assertThat((99..99).size()).isEqualTo(1)
+        assertThat((IntRange.EMPTY).size()).isEqualTo(0)
     }
 }

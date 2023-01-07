@@ -1,6 +1,6 @@
 package de.niemeyer.aoc.points
 
-import org.junit.jupiter.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -14,13 +14,13 @@ class PrintingTest {
     @Test
     @DisplayName("toStringTopLeft")
     fun testToStringTopLeft() {
-        assertEquals(inp, parsePoint2dSetTopLeft(inp).toStringTopLeft())
+        assertThat(parsePoint2dSetTopLeft(inp).toStringTopLeft()).isEqualTo(inp)
     }
 
     @Test
     @DisplayName("toStringBottomLeft")
     fun testToStringBottomLeft() {
-        assertEquals(inp, parsePoint2dSetBottomLeft(inp).toStringBottomLeft())
+        assertThat(parsePoint2dSetBottomLeft(inp).toStringBottomLeft()).isEqualTo(inp)
     }
 
     @Test
@@ -37,8 +37,8 @@ class PrintingTest {
             ++++++
             +++++#
         """.trimIndent()
-        assertEquals(correct, m.toPrintableStringExisting('+'))
-        assertEquals(correct.replace('+', ' '), m.toPrintableStringExisting())
+        assertThat(m.toPrintableStringExisting('+')).isEqualTo(correct)
+        assertThat(m.toPrintableStringExisting()).isEqualTo(correct.replace('+', ' '))
     }
 
     @Test
@@ -55,6 +55,6 @@ class PrintingTest {
             12345
             ABCDE
         """.trimIndent()
-        assertEquals(correct, inp.toPrintableStringBottomLeft())
+        assertThat(inp.toPrintableStringBottomLeft()).isEqualTo(correct)
     }
 }
